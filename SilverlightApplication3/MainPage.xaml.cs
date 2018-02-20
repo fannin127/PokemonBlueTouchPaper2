@@ -37,13 +37,10 @@ namespace SilverlightApplication3
         private List<Pokemon> pc;
         private bool lost;
         private bool inBattle;
-<<<<<<< HEAD
         private BattleController battleController;
         private bool deletingAMove;
         private Pokemon deletingAMoveFrom;
         private string replacingMove;
-=======
->>>>>>> 2cd9cde35f1003b65e9241509f1c1bff1ff16a72
         #endregion
 
         #region Stores
@@ -53,24 +50,17 @@ namespace SilverlightApplication3
         Pokebuilder pb;
         #endregion
 
-<<<<<<< HEAD
         #region InteractionsAndNPC
-=======
-        #region Interactions
->>>>>>> 2cd9cde35f1003b65e9241509f1c1bff1ff16a72
         private NurseItem nurseJoy;
         private Interaction currentInteraction;
         private Interaction nextInteraction;
         NPCInteraction nurseForced;
         private bool moretoDo;
-<<<<<<< HEAD
 
         NPC trainer;
         NPC profOak;
         NPC gymTurn1Trainer;
         NPC gymLeaderTurn;
-=======
->>>>>>> 2cd9cde35f1003b65e9241509f1c1bff1ff16a72
         #endregion
 
         #region BagAndItems
@@ -87,7 +77,7 @@ namespace SilverlightApplication3
         private int playerLeft, playerTop = 0;
         #endregion
 
-        private bool spokeToOak; 
+        private bool spokeToOak;
         private int currentLookingPartyPokemon = 0;
         HashSet<int> PokesSeenID;
 
@@ -109,10 +99,9 @@ namespace SilverlightApplication3
         #endregion
 
         #endregion
-<<<<<<< HEAD
 
         public MainPage()
-        {  
+        {
             InitializeComponent();
             this.AddHandler(Control.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
             this.Focus();
@@ -124,8 +113,6 @@ namespace SilverlightApplication3
             Canvas.SetZIndex(Player, 100);
             Canvas.SetZIndex(PokemonInfoScreen, 200);
         }
-=======
->>>>>>> 2cd9cde35f1003b65e9241509f1c1bff1ff16a72
 
         private void InitialiseVariables()
         {
@@ -147,17 +134,6 @@ namespace SilverlightApplication3
             routeSetup();
 
             inBattle = false;
-<<<<<<< HEAD
-=======
-
-
-            myBag.Add(its.get(ItemName.FireStone));
-
-
-            Canvas.SetZIndex(Player, 100);
-
-            Canvas.SetZIndex(PokemonInfoScreen, 200);
->>>>>>> 2cd9cde35f1003b65e9241509f1c1bff1ff16a72
         }
 
         private void routeSetup()
@@ -543,7 +519,8 @@ namespace SilverlightApplication3
                     b4.IsEnabled = true;
 
                     battleMode(new List<Pokemon> { v.Encounter }, true);
-                } else if (v.inter != null)
+                }
+                else if (v.inter != null)
                 {
                     moretoDo = false;
                     currentInteraction = v.inter;
@@ -568,11 +545,12 @@ namespace SilverlightApplication3
             if (d.foeParty.First() == -999)
             {
                 battleMode(pb.SpecificPokesForTrainer(), false);
-            } else
+            }
+            else
             {
                 battleMode(pb.pokesForTrainer(d.foeParty, d.foeLevels), false);
             }
-            
+
             battleController.isWildBattle = false;
             b4.IsEnabled = false;
             return true;
@@ -584,18 +562,18 @@ namespace SilverlightApplication3
             MyStatusLabel.Content = "";
             FoeStatusLabel.Content = "";
             PokesSeenID.Add(foe.First().Number);
-            
+
             MySprite.Source = new BitmapImage(new Uri(("/images/back/" + party[0].Number + ".png"), UriKind.Relative));
             FoeSprite.Source = new BitmapImage(new Uri(("/images/front/" + foe.First().Number + ".png"), UriKind.Relative));
 
             textBlockBat.Text = "";
-           
+
             inBattle = true;
             fightButtonPressed = false;
             usingItem = false;
             currentBagOpen = ItemType.HealAndStatus;
             currentItem = null;
-             
+
             RouteCanvas.Visibility = Visibility.Collapsed;
             BattleCanvas.Visibility = Visibility.Visible;
 
@@ -611,7 +589,7 @@ namespace SilverlightApplication3
 
             dealWithDamage();
         }
-      
+
         public void dealWithDamage()
         {
             if (inBattle)
@@ -635,7 +613,7 @@ namespace SilverlightApplication3
 
                 MyHealth.Fill = battleController.getHealthColor(battleController.CurrentInBattle);
                 FoeHealth.Fill = battleController.getHealthColor(battleController.CurrentFoe);
-                
+
                 //return to selecting a move
                 if (battleController.battleQueue.Count == 0)
                 {
@@ -656,7 +634,7 @@ namespace SilverlightApplication3
             }
 
         }
-        
+
         private int nextSpace()
         {
             int i = 0;
@@ -682,7 +660,7 @@ namespace SilverlightApplication3
             EvolveCanvas.Visibility = Visibility.Visible;
             EvolveText.Text = "Congratulations! Your " + oldName + " has evolved into " + p.Name + "!";
         }
-       
+
         private void b1_Click(object sender, RoutedEventArgs e)
         {
             if (deletingAMove)
@@ -805,11 +783,11 @@ namespace SilverlightApplication3
             battleController.FoeNextAttackI = i;
             return foeMove;
         }
-       
+
         private string FoeAttack()
         {
             if (inBattle && !battleController.finalMoveFinished)
-            {  
+            {
                 if (battleController.FoeNextAttack.ToFoe)
                 {
                     return dealWithAttack(battleController.generalAttack(battleController.CurrentFoe, battleController.CurrentInBattle, battleController.FoeNextAttack, battleController.FoeNextAttackI, "The foe"));
@@ -835,18 +813,20 @@ namespace SilverlightApplication3
             try
             {
                 MyStatusLabel.Content = result["MyStatusLabel"];
-            } catch
+            }
+            catch
             {
 
             }
             try
             {
-                FoeStatusLabel.Content = result["FoeStatusLabel"];   
-            } catch
+                FoeStatusLabel.Content = result["FoeStatusLabel"];
+            }
+            catch
             {
 
             }
-           
+
             return result["return"];
         }
 
@@ -870,14 +850,14 @@ namespace SilverlightApplication3
 
 
         }
-        
+
         public void deleteMove(int i)
         {
             deletingAMove = false;
             deletingAMoveFrom.Moves[i] = replacingMove;
             textBlockBat.Text = deletingAMoveFrom.Name + " learned " + replacingMove;
         }
-        
+
         private void battleEnd(string text)
         {
             b1.IsEnabled = false;
@@ -899,7 +879,7 @@ namespace SilverlightApplication3
                 BattleCanvas.Visibility = Visibility.Collapsed;
                 RouteCanvas.Visibility = Visibility.Visible;
                 inBattle = false;
-                
+
 
                 if (lost)
                 {
@@ -950,7 +930,7 @@ namespace SilverlightApplication3
                     }
 
                 }
-            } 
+            }
         }
 
         private void switchScreen(bool forced)
@@ -1024,11 +1004,12 @@ namespace SilverlightApplication3
                     if (party[i].needToEvolve(currentItem.Name))
                     {
                         evolveScreen(party[i]);
-                    }      
-                } else
+                    }
+                }
+                else
                 {
                     party[i].heal((currentItem as HealAndStatusItem).use());
-                }      
+                }
             }
 
             myBag.Remove(itemBox.SelectedItem as Item, currentBagOpen);
@@ -1077,7 +1058,7 @@ namespace SilverlightApplication3
             {
                 if (inBattle)
                 {
-                   endOfAttackPhaseEffects();
+                    endOfAttackPhaseEffects();
                 }
             });
 
@@ -1088,7 +1069,7 @@ namespace SilverlightApplication3
             battleController.finalMoveFinished = false;
             if (!b.isAttacking())
             {
-                battleController.battleQueue.Enqueue(() => { textBlockBat.Text = FoeAttack();  });
+                battleController.battleQueue.Enqueue(() => { textBlockBat.Text = FoeAttack(); });
                 battleController.battleQueue.Enqueue(battleEndEffects);
 
                 b1.IsEnabled = false;
@@ -1118,28 +1099,30 @@ namespace SilverlightApplication3
                         textBlockBat.Text = b.Act();
 
                     }
-                } else
+                }
+                else
                 {
                     if (foeMove.Priority > myMovePriorty)
                     {
                         battleController.battleQueue.Enqueue(() => { textBlockBat.Text = b.Act(); });
                         battleController.battleQueue.Enqueue(battleEndEffects);
                         textBlockBat.Text = FoeAttack();
-                    } else
+                    }
+                    else
                     {
                         battleController.battleQueue.Enqueue(() => { textBlockBat.Text = FoeAttack(); });
                         battleController.battleQueue.Enqueue(battleEndEffects);
                         textBlockBat.Text = b.Act();
                     }
                 }
-                
-                
+
+
 
                 b1.IsEnabled = false;
                 b2.IsEnabled = false;
                 b3.IsEnabled = false;
                 b4.IsEnabled = false;
-               
+
 
             }
 
@@ -1151,7 +1134,7 @@ namespace SilverlightApplication3
             battleController.CurrentFoe.Protection = null;
             battleController.CurrentInBattle.Protection = null;
             //weather like hail and sandstorm
-            battleController.battleQueue.Enqueue( () => { textBlockBat.Text = battleController.EndOfAttackPhaseEffects(); dealWithDamage(); });
+            battleController.battleQueue.Enqueue(() => { textBlockBat.Text = battleController.EndOfAttackPhaseEffects(); dealWithDamage(); });
             string ret = "";
 
             if (battleController.CurrentFoe.Leeching)
@@ -1201,7 +1184,8 @@ namespace SilverlightApplication3
                 ret = battleController.CurrentInBattle.EndOfTurnEffects(0);
                 if (ret != "")
                 {
-                    battleController.battleQueue.Enqueue(() => { textBlockBat.Text = battleController.CurrentInBattle.EndOfTurnEffects(0);
+                    battleController.battleQueue.Enqueue(() => {
+                        textBlockBat.Text = battleController.CurrentInBattle.EndOfTurnEffects(0);
                         dealWithDamage();
                     }
                     );
@@ -1212,11 +1196,12 @@ namespace SilverlightApplication3
             if (battleController.battleQueue.Count > 0)
             {
                 battleController.battleQueue.Dequeue().Invoke();
-            } else
+            }
+            else
             {
                 dealWithDamage();
             }
-            
+
 
 
         }
@@ -1440,32 +1425,34 @@ namespace SilverlightApplication3
                 quantityBox.Text = "Quantity in bag: ";
             }
         }
-        
+
         private void LearnNewMove(Pokemon p, string m)
         {
-            if (p.Moves.Where ((mov) => mov == null).Any()){
+            if (p.Moves.Where((mov) => mov == null).Any())
+            {
                 battleController.battleQueue.Enqueue(() => textBlockBat.Text = p.Name + "learnt the move " + m);
                 p.Moves[p.getNextAvailableMoveSlot()] = m;
-            } else
+            }
+            else
             {
                 battleController.battleQueue.Enqueue(() => textBlockBat.Text = p.Name + " is trying to learn the move " + m);
                 battleController.battleQueue.Enqueue(() => openYesNo("Would you like to delete a move in order to learn " + m + "?", true));
                 currentInteraction = new UxInteraction(() =>
-              {
-                  deletingAMove = true;
-                  deletingAMoveFrom = p;
-                  replacingMove = m;
-                  string[] str = battleController.getButtonContent();
-                  b1.Content = str[0];
-                  b2.Content = str[1];
-                  b3.Content = str[2];
-                  b4.Content = str[3];
-                  b1.IsEnabled = true;
-                  b2.IsEnabled = true;
-                  b3.IsEnabled = true;
-                  b4.IsEnabled = true;
-              });
-            } 
+                {
+                    deletingAMove = true;
+                    deletingAMoveFrom = p;
+                    replacingMove = m;
+                    string[] str = battleController.getButtonContent();
+                    b1.Content = str[0];
+                    b2.Content = str[1];
+                    b3.Content = str[2];
+                    b4.Content = str[3];
+                    b1.IsEnabled = true;
+                    b2.IsEnabled = true;
+                    b3.IsEnabled = true;
+                    b4.IsEnabled = true;
+                });
+            }
         }
 
         private void checkAlive()
@@ -1494,7 +1481,7 @@ namespace SilverlightApplication3
                     else
                     {
                         battleController.battleQueue.Enqueue(() => textBlockBat.Text = s);
-                    }       
+                    }
                 }
 
                 if (battleController.battleEnded())
@@ -1544,7 +1531,7 @@ namespace SilverlightApplication3
                 usingItem = true;
                 currentItem = itemBox.SelectedItem as Item;
             }
-                
+
             if (BagSellQUp.Visibility == Visibility.Visible)
             {
                 //selling
@@ -1681,7 +1668,7 @@ namespace SilverlightApplication3
             pc = pb.openPokes(elem.Element("pc"));
 
             var seenPokes = elem.Element("PokemonSeen");
-            foreach(var v in seenPokes.Elements())
+            foreach (var v in seenPokes.Elements())
             {
                 PokesSeenID.Add(int.Parse(v.Value));
             }
@@ -1715,7 +1702,7 @@ namespace SilverlightApplication3
             saveFile.Add(playerGender);
 
             var PokemonSeen = new XElement("PokemonSeen");
-            foreach(var i in PokesSeenID)
+            foreach (var i in PokesSeenID)
             {
                 PokemonSeen.Add(new XElement("Number", i));
             }
@@ -1997,7 +1984,7 @@ namespace SilverlightApplication3
         }
 
         private void PokedexClose_Click_1(object sender, RoutedEventArgs e)
-        { 
+        {
             PokedexSelectCanvas.Visibility = Visibility.Visible;
             PokedexCanvas.Visibility = Visibility.Collapsed;
         }
@@ -2011,16 +1998,18 @@ namespace SilverlightApplication3
                 {
                     PokedexEntrySprite.Source = null;
                     PokedexFlavourText.Text = "";
-                } else
+                }
+                else
                 {
                     PokedexEntrySprite.Source = new BitmapImage(new Uri(("/images/front/" + (PokedexSelectListBox.SelectedItem as Pokemon).Number + ".png"), UriKind.Relative));
                     if ((PokedexSelectListBox.SelectedItem as Pokemon).Confused)
                     {
                         PokedexFlavourText.Text = "???";
-                    } else
+                    }
+                    else
                     {
                         PokedexFlavourText.Text = pb.getFlavourText((PokedexSelectListBox.SelectedItem as Pokemon).Number);
-                    }      
+                    }
                 }
             }
             PokedexSelectCanvas.Visibility = Visibility.Collapsed;
@@ -2038,24 +2027,26 @@ namespace SilverlightApplication3
 
         private void addRowsToPokedexGrid()
         {
-            foreach(var v in pb.getAllPokesIDName())
+            foreach (var v in pb.getAllPokesIDName())
             {
                 var t = party.Where((p) => { if (p == null) { return false; } else { return p.Number == v.Number; } }).Any();
                 var y = pc.Where((p) => { return p.Number == v.Number; }).Any();
 
-                if ( t || y)
+                if (t || y)
                 {
                     PokedexSelectListBox.Items.Add(v);
-                } else
-                { 
+                }
+                else
+                {
                     if (PokesSeenID.Contains(v.Number))
                     {
                         PokedexSelectListBox.Items.Add(new Pokemon() { Number = v.Number, Name = v.Name, Confused = true });
-                    } else
+                    }
+                    else
                     {
                         PokedexSelectListBox.Items.Add(new Pokemon() { Number = v.Number, Name = "???" });
-                    }                 
-                }               
+                    }
+                }
             }
         }
 
