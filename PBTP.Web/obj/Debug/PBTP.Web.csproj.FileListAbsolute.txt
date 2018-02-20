@@ -1,0 +1,6 @@
+c:\users\ryan.fannin\documents\visual studio 2015\Projects\SilverlightApplication3\PBTP.Web\bin\PBTP.Web.dll.config
+c:\users\ryan.fannin\documents\visual studio 2015\Projects\SilverlightApplication3\PBTP.Web\bin\PBTP.Web.dll
+c:\users\ryan.fannin\documents\visual studio 2015\Projects\SilverlightApplication3\PBTP.Web\bin\PBTP.Web.pdb
+c:\users\ryan.fannin\documents\visual studio 2015\Projects\SilverlightApplication3\PBTP.Web\obj\Debug\PBTP.Web.csprojResolveAssemblyReference.cache
+c:\users\ryan.fannin\documents\visual studio 2015\Projects\SilverlightApplication3\PBTP.Web\obj\Debug\PBTP.Web.dll
+c:\users\ryan.fannin\documents\visual studio 2015\Projects\SilverlightApplication3\PBTP.Web\obj\Debug\PBTP.Web.pdb

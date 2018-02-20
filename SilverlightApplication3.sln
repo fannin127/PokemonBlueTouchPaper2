@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverlightApplication3", "SilverlightApplication3\SilverlightApplication3.csproj", "{260734D8-E27A-4759-9804-B9C47325D9F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PBTP.Web", "PBTP.Web\PBTP.Web.csproj", "{5916D9D4-2767-449D-B7ED-F426B298373D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PBTTest", "PBTTest\PBTTest.csproj", "{F1ADB5E2-BD0E-4448-974C-A53D7BC9719A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{260734D8-E27A-4759-9804-B9C47325D9F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{260734D8-E27A-4759-9804-B9C47325D9F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{260734D8-E27A-4759-9804-B9C47325D9F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{260734D8-E27A-4759-9804-B9C47325D9F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5916D9D4-2767-449D-B7ED-F426B298373D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5916D9D4-2767-449D-B7ED-F426B298373D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5916D9D4-2767-449D-B7ED-F426B298373D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5916D9D4-2767-449D-B7ED-F426B298373D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1ADB5E2-BD0E-4448-974C-A53D7BC9719A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1ADB5E2-BD0E-4448-974C-A53D7BC9719A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1ADB5E2-BD0E-4448-974C-A53D7BC9719A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1ADB5E2-BD0E-4448-974C-A53D7BC9719A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

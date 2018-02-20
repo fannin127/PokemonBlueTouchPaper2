@@ -1,0 +1,236 @@
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk" x:Class="SilverlightApplication3.MainPage"
+    xmlns:data="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data"
+    xmlns:conv ="clr-namespace:SilverlightApplication3"
+    mc:Ignorable="d"
+    d:DesignHeight="1920" d:DesignWidth="1080">
+    <Canvas x:Name="Backing" Background="Black">
+
+
+        <Canvas x:Name="Overall" Background="White">
+
+
+            <Canvas x:Name="initCanvas" Visibility="Collapsed">
+                <Rectangle x:Name="initBack" Fill="White" Canvas.Left="0" Canvas.Top ="0" Width="400" Height="400"/>
+                <RadioButton x:Name="BoyRadbutton" Content="Boy" Canvas.Left="194" Canvas.Top="85" IsChecked="true"/>
+                <RadioButton x:Name="GirlRadButton" Content="Girl" Canvas.Left="240" Canvas.Top="85"/>
+                <TextBlock x:Name="boyorgirlText" Text="Are you a boy or a girl?" Canvas.Top="85" Canvas.Left="50" Width="150" Height="20"/>
+                <TextBlock x:Name="nameTextBlockLabel" Text="What is your name?" Canvas.Top="120" Canvas.Left="50" Width="150" Height="20"/>
+                <TextBox x:Name="TrainerNameTextBox" Canvas.Top="120" Canvas.Left="180" Width="100" Height="25"/>
+                <Button x:Name="readyToStartButton" Canvas.Top="150" Canvas.Left="120" Width="80" Height="20" Content="Start Game" Click="readyToStartButton_Click"/>
+
+            </Canvas>
+
+            <Canvas x:Name="EvolveCanvas" Visibility="Collapsed">
+                <Rectangle Fill="White" Width="400" Height="400"/>
+                <TextBlock x:Name="EvolveText" Text="EVOLVE" Canvas.Left="24" Canvas.Top="274" Width="355" Height="104" />
+            </Canvas>
+            <Canvas x:Name="TrainerCardCanvas" Visibility="Collapsed">
+                <Rectangle Fill="White" Width="400" Height="400"/>
+                <Rectangle x:Name="PlayerSprite" Canvas.Left="50" Canvas.Top="50" Width="100" Height="200" Fill="Red"/>
+                <Rectangle x:Name="BadgeOne" Canvas.Left="50" Canvas.Top="300" Width="30" Height="30" Fill="Gray"/>
+                <Rectangle x:Name="BadgeTwo" Canvas.Left="90" Canvas.Top="300" Width="30" Height="30" Fill="Blue"/>
+                <Rectangle x:Name="BadgeThree" Canvas.Left="130" Canvas.Top="300" Width="30" Height="30" Fill="Yellow"/>
+                <Rectangle x:Name="BadgeFour" Canvas.Left="170" Canvas.Top="300" Width="30" Height="30" Fill="Green"/>
+                <Rectangle x:Name="BadgeFive" Canvas.Left="210" Canvas.Top="300" Width="30" Height="30" Fill="Purple"/>
+                <Rectangle x:Name="BadgeSix" Canvas.Left="250" Canvas.Top="300" Width="30" Height="30" Fill="Pink"/>
+                <Rectangle x:Name="BadgeSeven" Canvas.Left="290" Canvas.Top="300" Width="30" Height="30" Fill="Red"/>
+                <Rectangle x:Name="BadgeEight" Canvas.Left="330" Canvas.Top="300" Width="30" Height="30" Fill="SaddleBrown"/>
+                <TextBlock x:Name="CardNameText" Canvas.Left="200" Canvas.Top="50" Width="100" Height="30" Text="TRAINER_NAME"/>
+                <TextBlock x:Name="CardMoneyText" Canvas.Left="200" Canvas.Top="100" Width="100" Height="30" Text="TRAINER_MONEY"/>
+                <TextBlock x:Name="CardCaughtAmount" Canvas.Left="200" Canvas.Top="150" Width="100" Height="30" Text="TRAINER_CAUGHT"/>
+                <Button x:Name="TrainerCardClose" Canvas.Left="200" Canvas.Top="220" Width="100" Height="30" Content="Close" Click="TrainerCardClose_Click"/>
+
+            </Canvas>
+
+            <Canvas x:Name="PokedexCanvas" Visibility="Collapsed">
+                <Rectangle Fill="White" Width="400" Height="400"/>
+                <Rectangle Fill="White" Width="344" Height="123" Canvas.Left="27" Canvas.Top="222" Stroke="Black" StrokeThickness="3"/>
+                <Button x:Name="PokedexClose" Canvas.Left="284" Canvas.Top="350" Width="100" Height="30" Content="Close" Click="PokedexClose_Click_1" />
+                <Image x:Name="PokedexEntrySprite" Width="121" Height="123" Canvas.Left="27" Canvas.Top="56" />
+                <TextBlock x:Name="PokedexFlavourText" Width="330" Height="115" Canvas.Left="30" Canvas.Top="225" FontSize="16" TextWrapping="Wrap"/>
+                <Rectangle Fill="White" Width="199" Height="123" Canvas.Left="172" Canvas.Top="56" Stroke="Black" StrokeThickness="3"/>
+                <TextBlock x:Name="PokedexEntryNameText" Width="199" Height="123" Canvas.Left="180" Canvas.Top="60" FontSize="16"/>
+            </Canvas>
+
+            <Canvas x:Name="PokedexSelectCanvas" Visibility="Collapsed">
+                <Rectangle Fill="White" Width="400" Height="400"/>
+                <Button x:Name="PokedexSelectClose" Canvas.Left="284" Canvas.Top="350" Width="100" Height="30" Content="Close" Click="PokedexClose_Click" />
+                <Button x:Name="PokedexOpenButton" Canvas.Left="166" Canvas.Top="350" Width="100" Height="30" Content="Open" Click="PokedexOpenButton_Click" />
+                <ListBox x:Name="PokedexSelectListBox" Width="300" Height="300" Canvas.Left="50" Canvas.Top="50"/>
+            </Canvas>
+            
+            <Canvas x:Name="BuyingCanvas"  Visibility="Collapsed">
+                <Rectangle x:Name="buyBack" Fill="White" Canvas.Left="0" Canvas.Top ="0" Width="400" Height="400"/>
+                <Grid Height="400" Width="400">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="119*"/>
+                        <ColumnDefinition Width="281*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ListBox x:Name="itemBoxBuying" Grid.Column="1" HorizontalAlignment="Left" Height="290" VerticalAlignment="Top" Width="281" SelectionChanged="itemBoxBuying_SelectionChanged" />
+                    <TextBlock x:Name="itemInfoBoxBuying" Grid.Column="1" HorizontalAlignment="Left" Height="110" TextWrapping="Wrap" Text="ITEM INFO" VerticalAlignment="Top" Width="281" Margin="0,290,0,0"/>
+                    <TextBlock x:Name="quantityBoxBuying" HorizontalAlignment="Left" Height="35" Grid.Row="0" TextWrapping="Wrap" Text="QUANTITY: 1" VerticalAlignment="Top" Width="119" Margin="0,153,0,0"/>
+                    <TextBlock x:Name="PriceBoxBuying" HorizontalAlignment="Left" Height="35" Grid.Row="0" TextWrapping="Wrap" Text="Price: 1" VerticalAlignment="Top" Width="119" Margin="0,188,0,0"/>
+                    <TextBlock x:Name="moneyTextBox" Text="Money: " />
+                    <Button x:Name="closeShopButton" Content="Close" HorizontalAlignment="Left" Height="40" Margin="10,350,0,0" VerticalAlignment="Top" Width="99" Click="closeShopButton_Click" />
+                    <Button x:Name="buyButton" Content="Buy" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="99"  Canvas.Left="10" Canvas.Top="350" RenderTransformOrigin="0.505,-0.688" Margin="10,286,0,0" Click="buyButton_Click"/>
+                    <Button x:Name="quantUp" Content="UP" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="45"  Canvas.Left="10" Canvas.Top="350" RenderTransformOrigin="0.505,-0.688" Margin="64,228,0,0" Click="quantUp_Click"/>
+                    <Button x:Name="QuantDown" Content="DOWN" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="45"  Canvas.Left="10" Canvas.Top="350" RenderTransformOrigin="0.505,-0.688" Margin="10,228,0,0" Click="QuantDown_Click"/>
+
+                </Grid>
+            </Canvas>
+
+            <Canvas x:Name="SaveAndPpenCanvas" Background="White" Visibility="Visible">
+                <Canvas.Resources>
+                    <conv:VisibilitySaveContinueConverter x:Key="ContinueConverter" />
+                </Canvas.Resources>
+
+                <Button x:Name="NewGameButton" Content="New Game" Canvas.Left="50" Canvas.Top="106" Click="NewGameButton_Click" />
+                <Button x:Name="ContinueButton" Content="Continue" Canvas.Left="50" Canvas.Top="62" Click="ContinueButton_Click" Visibility="{Binding Converter={StaticResource ContinueConverter}}"/>
+            </Canvas>
+
+
+            <Canvas x:Name="PokemonInfoScreen" Visibility="Collapsed">
+                <Rectangle x:Name="backForInfo" Fill="White" Canvas.Left="0" Canvas.Top ="0" Width="400" Height="400"/>
+                <Image  Height="100" Canvas.Left="28" Canvas.Top="24" Width="100" x:Name="PokemonInfoSprite"/>
+                <TextBox x:Name="PokeStatBox" Height="187" Canvas.Left="183" TextWrapping="Wrap" Text="TextBox" Canvas.Top="28" Width="168"/>
+                <TextBox x:Name="PokeMoveBox" Height="130" Canvas.Left="32" TextWrapping="Wrap" Text="TextBox" Canvas.Top="240" Width="319"/>
+                <Button x:Name="sendToFrontButton" Content="Send To Front" Height="27" Canvas.Left="28" Canvas.Top="136" Width="100" Click="sendToFrontButton_Click"/>
+                <Button x:Name="closePokeInfo" Content="Close" Height="27" Canvas.Left="28" Canvas.Top="168" Width="100" Click="closePokeInfo_Click"/>
+                <Rectangle x:Name="InfoExp" Fill="Green" Height="8" Canvas.Left="28" Stroke="Black" Canvas.Top="199" Width="100"/>
+
+            </Canvas>
+            <Canvas x:Name="BattleCanvas" Background="White"  Visibility="Collapsed">
+                <Rectangle x:Name="battleBack" Fill="White" Canvas.Left="0" Canvas.Top ="0" Width="400" Height="400"/>
+                <Button x:Name="b1" Content="Button" Canvas.Left="15" Canvas.Top="248" Width="180" Height="60" Click="b1_Click"/>
+                <Button x:Name="b2" Content="Button" Canvas.Left="200" Canvas.Top="248" Width="180" Height="60" Click="b2_Click"/>
+                <Button x:Name="b3" Content="Button" Canvas.Left="15" Canvas.Top="313" Width="180" Height="60" Click="b3_Click"/>
+                <Button x:Name="b4" Content="Button" Canvas.Left="200" Canvas.Top="313" Width="180" Height="60" Click="b4_Click"/>
+                <Button x:Name="bBack" Content="Back" Canvas.Left="15" Canvas.Top="219" Width="67" Height="24" Click="bBack_Click" Visibility="Collapsed"/>
+                <TextBlock x:Name="textBlockBat" Canvas.Left="207" TextWrapping="Wrap" Text="TextBlock" Canvas.Top="218"/>
+                <Rectangle x:Name="meBack" Fill="#FFF4F4F5" Height="56" Canvas.Left="15" Stroke="Black" Canvas.Top="151" Width="160"/>
+                <Image x:Name ="MySprite"  Height="112" Canvas.Left="52"  Canvas.Top="31" Width="123"/>
+                <Image x:Name ="FoeSprite"  Height="112" Canvas.Left="257"  Canvas.Top="6" Width="123"/>
+                <Rectangle x:Name="MyHealth" Fill="#FFF4F4F5" Height="17" Canvas.Left="76" Stroke="Black" Canvas.Top="151" Width="99"/>
+                <Rectangle x:Name="MyExp" Fill="Green" Height="8" Canvas.Left="15" Stroke="Black" Canvas.Top="199" Width="160"/>
+                <Rectangle x:Name="FoeHealth" Fill="#FFF4F4F5" Height="16" Canvas.Left="281" Stroke="Black" Canvas.Top="127" Width="99"/>
+
+
+
+                <sdk:Label x:Name="MyHPLabel" Content="myHP" Height="28" Canvas.Left="15" Canvas.Top="148" Width="67"/>
+                <sdk:Label x:Name="MyStatusLabel" Content="STATUS" Height="28" Canvas.Left="15" Canvas.Top="31" Width="67"/>
+                <sdk:Label x:Name="FoeHPLabel" Content="FoeHP" Height="28" Canvas.Left="217" Canvas.Top="118" Width="67" />
+                <sdk:Label x:Name="MyNameLabel" Content="MyName" Height="28" Canvas.Left="15" Canvas.Top="171" Width="145"/>
+                <sdk:Label x:Name="FoeNameLabel" Content ="foeName" Height="28" Canvas.Left="217" Canvas.Top="143" Width="123"/>
+                <sdk:Label x:Name="FoeStatusLabel" Content="STATUS" Height="28" Canvas.Left="217" Canvas.Top="13" Width="67" />
+
+            </Canvas>
+            <Canvas x:Name="RouteCanvas" Background="White" Visibility="Collapsed">
+                <Rectangle x:Name ="Background" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="360" Stroke="Black" VerticalAlignment="Top" Width="360" Canvas.Left="-1"/>
+                <Rectangle x:Name="Player" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="40" Stroke="Black" VerticalAlignment="Top" Width="40" Canvas.Left="160" Canvas.Top="160"/>
+                <TextBlock x:Name="textBlock" Canvas.Left="207" TextWrapping="Wrap" Text="TextBlock" Canvas.Top="218"/>
+            </Canvas>
+
+
+
+            <Canvas x:Name ="YesNoCanvas" Visibility="Collapsed">
+                <Rectangle Fill="#FFF4F4F5" Height="100" Canvas.Left="98" Stroke="Black" Canvas.Top="287" Width="291"/>
+                <Button x:Name="NoButton" Content="No" Canvas.Left="303" Canvas.Top="327" Width="75" Click="NoButton_Click"/>
+                <Button x:Name="YesButton" Content="Yes" Canvas.Left="303" Canvas.Top="300" Width="75" Click="YesButton_Click"/>
+                <Button x:Name="CloseYesNoButton" Content="Close" Canvas.Left="303" Canvas.Top="354" Width="75" Click="CloseYesNoButton_Click" Visibility="Collapsed"/>
+                <TextBlock x:Name="YesNoText" Height="66" Canvas.Left="118" TextWrapping="Wrap" Text="" Canvas.Top="300" Width="170"/>
+
+            </Canvas>
+
+            <Canvas x:Name="StartCanvas" Visibility="Collapsed">
+                <Rectangle Fill="#FFF4F4F5" Height="259" Canvas.Left="257" Stroke="Black" Canvas.Top="61" Width="143"/>
+                <Button x:Name="pokedexButton" Content="Pokedex" Height="40" Canvas.Left="277" Canvas.Top="67" Width="113" Click="pokedexButton_Click"/>
+                <Button x:Name="pokemonButton" Content="Pokemon" Height="40" Canvas.Left="277" Canvas.Top="112" Width="113" Click="pokemonButton_Click"/>
+                <Button x:Name="bagButton" Content="Bag" Height="40" Canvas.Left="277" Canvas.Top="157" Width="113" Click="bagButton_Click"/>
+                <Button x:Name="trainerButton" Content="Trainer" Height="40" Canvas.Left="277" Canvas.Top="202" Width="113" Click="trainerButton_Click"/>
+                <Button x:Name="saveButton" Content="Save" Height="40" Canvas.Left="277" Canvas.Top="247" Width="113" Click="saveButton_Click"/>
+            </Canvas>
+
+            <Canvas x:Name="BagCanvas" Height="400" Width="400" Visibility="Collapsed">
+                <Rectangle Height="400" Width="400" Fill="White"/>
+
+                <Grid Height="400" Width="400">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="119*"/>
+                        <ColumnDefinition Width="281*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="29*"/>
+                        <RowDefinition Height="11*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock x:Name="MoneyInBagTextBlock" Text="Money: " HorizontalAlignment="Left" Height="21" Margin="10,190,0,0" VerticalAlignment="Top" Width="99" />
+                    <Button x:Name="BagSellQUp" Content="Up" HorizontalAlignment="Left" Height="40" Margin="10,60,0,0" VerticalAlignment="Top" Width="40" Grid.Row="1" RenderTransformOrigin="1.78,0.625" Click="BagSellQUp_Click" />
+                    <Button x:Name="BagSellQDown" Content="Down" HorizontalAlignment="Left" Height="40" Margin="55,60,0,0" VerticalAlignment="Top" Width="40" Grid.Row="1" RenderTransformOrigin="1.78,0.625" Click="BagSellQDown_Click" />
+                    <Button x:Name="ItemsButton" Content="Items" HorizontalAlignment="Left" Height="40" Margin="10,10,0,0" VerticalAlignment="Top" Width="99" Click="ItemsButton_Click"/>
+                    <Button x:Name="KeyItemsButton" Content="Key Items" HorizontalAlignment="Left" Height="40" Margin="10,100,0,0" VerticalAlignment="Top" Width="99" Click="KeyItemsButton_Click"/>
+                    <Button x:Name="BallsButton" Content="Pokeballs" HorizontalAlignment="Left" Height="40" Margin="10,55,0,0" VerticalAlignment="Top" Width="99" Click="BallsButton_Click"/>
+                    <ListBox x:Name="itemBox" Grid.Column="1" HorizontalAlignment="Left" Height="290" VerticalAlignment="Top" Width="281" SelectionChanged="itemBox_SelectionChanged"/>
+                    <TextBlock x:Name="itemInfoBox" Grid.Column="1" HorizontalAlignment="Left" Height="110" Grid.Row="1" TextWrapping="Wrap" Text="ITEM INFO" VerticalAlignment="Top" Width="281"/>
+                    <TextBlock x:Name="quantityBox" HorizontalAlignment="Left" Height="31" Grid.Row="1" TextWrapping="Wrap" Text="QUANTITY" VerticalAlignment="Top" Width="119"/>
+                    <Button x:Name="closeBagButton" Content="Close" HorizontalAlignment="Left" Height="40" Margin="10,145,0,0" VerticalAlignment="Top" Width="99" Click="closeBagButton_Click"/>
+                    <Button x:Name="useButton" Content="Use" HorizontalAlignment="Left" Height="40" Margin="10,240,0,0" VerticalAlignment="Top" Width="99" Click="useButton_Click"/>
+
+                </Grid>
+
+
+            </Canvas>
+
+            <Canvas x:Name="SwitchCanvas" Visibility="Collapsed">
+                <Button x:Name="s1" Content="Button" Height="61" Canvas.Left="79" Canvas.Top="6" Width="248" Click="s1_Click"/>
+                <Button x:Name="s2" Content="Button" Height="61" Canvas.Left="79" Canvas.Top="72" Width="248" Click="s2_Click"/>
+                <Button x:Name="s3" Content="Button" Height="61" Canvas.Left="79" Canvas.Top="138" Width="248" Click="s3_Click"/>
+                <Button x:Name="s4" Content="Button" Height="61" Canvas.Left="79" Canvas.Top="204" Width="248" Click="s4_Click"/>
+                <Button x:Name="s5" Content="Button" Height="61" Canvas.Left="79" Canvas.Top="270" Width="248" RenderTransformOrigin="0.524,1.754" Click="s5_Click"/>
+                <Button x:Name="s6" Content="Button" Height="61" Canvas.Left="79" Canvas.Top="331" Width="248" Click="s6_Click"/>
+                <Button x:Name="back" Content="Back" Height="37" Canvas.Left="13" Canvas.Top="18" Width="41" Click="back_Click"/>
+            </Canvas>
+
+            <Canvas x:Name="pcScreenCanvas" Visibility="Collapsed">
+                <Grid Height="400" Width="400">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="57*"/>
+                        <ColumnDefinition Width="43*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="323*"/>
+                        <RowDefinition Height="77*"/>
+
+                    </Grid.RowDefinitions>
+                    <ListBox x:Name="pcPokemoLstn" Grid.Column="0" Grid.Row="0"/>
+
+                    <Grid Grid.Column="0" Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="70*"/>
+                            <ColumnDefinition Width="30*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="BtnWithdraw" Grid.Column="0" Content="Withdraw" Click="BtnWithdraw_Click"/>
+                        <Button x:Name="BtnClosePC" Grid.Column="1" Content="Close" Click="BtnClosePC_Click"/>
+                    </Grid>
+
+
+                    <ListBox x:Name="partyPokemonLst" Grid.Column="1" Grid.Row="0"/>
+                    <Button x:Name="BtnDeposit" Grid.Column="1" Grid.Row="1" Content="Deposit" Click="BtnDeposit_Click"/>
+                </Grid>
+
+
+            </Canvas>
+
+        </Canvas>
+
+
+
+
+    </Canvas>
+
+
+</UserControl>
