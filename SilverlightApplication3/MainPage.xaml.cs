@@ -15,13 +15,9 @@ namespace SilverlightApplication3
 {
     public partial class MainPage : UserControl
     {
-        private Route currentRoute;
-        private bool fightButtonPressed;
-        private Pokemon[] party;
-        private bool inBattle;
-        private MoveStore ms;
-        private ItemStore its;
 
+        #region GlobalVariables
+        #region RouteVariables
         private Route r1;
         private Route r2;
         private Route pokeCentreR2;
@@ -30,37 +26,62 @@ namespace SilverlightApplication3
         private Route PokeCentreTurn;
         private Route pokeMartTurn;
         private Route GymTurn;
-
-
         private RouteName currentPokeCentre;
 
-        private RouteStore rs;
+        private Route currentRoute;
+        #endregion
 
+        #region BattleVariables
+        private bool fightButtonPressed;
+        private Pokemon[] party;
+        private List<Pokemon> pc;
+        private bool lost;
+        private bool inBattle;
+        private BattleController battleController;
+        private bool deletingAMove;
+        private Pokemon deletingAMoveFrom;
+        private string replacingMove;
+        #endregion
+
+        #region Stores
+        private MoveStore ms;
+        private ItemStore its;
+        private RouteStore rs;
+        Pokebuilder pb;
+        #endregion
+
+        #region InteractionsAndNPC
         private NurseItem nurseJoy;
         private Interaction currentInteraction;
         private Interaction nextInteraction;
+        NPCInteraction nurseForced;
+        private bool moretoDo;
+
+        NPC trainer;
+        NPC profOak;
+        NPC gymTurn1Trainer;
+        NPC gymLeaderTurn;
+        #endregion
+
+        #region BagAndItems
         private Bag myBag;
         private ItemType currentBagOpen;
         private Item currentItem;
-        Pokebuilder pb;
-
-        private bool spokeToOak;
-        private bool lost;
-        private List<Pokemon> pc;
-        private bool moretoDo;
-
         private bool usingItem;
-
-        const int blockSize = 40;
-
-        private int playerLeft, playerTop = 0;
-
-        private int currentLookingPartyPokemon = 0;
-
-        NPCInteraction nurseForced;
         private Item buyingItem;
         public int money = 1000;
+        #endregion
 
+        #region FrontEndVariables
+        const int blockSize = 40;
+        private int playerLeft, playerTop = 0;
+        #endregion
+
+        private bool spokeToOak; 
+        private int currentLookingPartyPokemon = 0;
+        HashSet<int> PokesSeenID;
+
+        #region Baadges
         private bool badge1 = false;
         private bool badge2 = false;
         private bool badge3 = false;
@@ -69,101 +90,51 @@ namespace SilverlightApplication3
         private bool badge6 = false;
         private bool badge7 = false;
         private bool badge8 = false;
+        #endregion
 
+        #region Trainer
         private enum gender { boy, girl };
         private gender trainerGender;
         private string trainerName;
+        #endregion
 
-        HashSet<int> PokesSeenID;
-
-
-
-        //CURRENTLY WORKING ON
-
-
-
-        //in thinking about importing moves
-        //normal damage dealing cat 0 - easy fine, just read xml - maybe not (thrash or other 'random-opponent' moves) (thousand waves
-        //status cat 1, should be fine, weird ones like heal-block to check
-        //stat change cat 2, should be fine, might be some weird ones i don't know about?
-        //healing moves cat 3, should be fine
-        //damage and ailment cat 4, mostly fine like ember and stuff, weird ones like wrap
-        //satatus and raise target stats (ie swagger) cat 5, should be fine
-        //damage and lower stats cat 6, should be fine i think
-        //damage raise user stats cat7, should be the same as 6
-        //damage and heal - absorb cat 8, probably fine (might not be actually not sure i save healing amount, need to check xml)
-        //one hit ko cat 9, don't know what the xml looks like for this
-        //whole field cat 10, again no idea (like trick room and stuff)
-        //one side field effect (toxic spikes, etc) cat 11, probs similar to 10
-        //force switch (roar) cat 12, no idea
-        //unique effect cat 13, will proably need hard coding
-
-
+        #endregion
 
         public MainPage()
-        {
-            // Backing.Background = new SolidColorBrush(Colors.Black);
-            
-            pc = new List<Pokemon>();
-            myBag = new Bag();
-            currentBagOpen = ItemType.HealAndStatus;
-            PokesSeenID = new HashSet<int>();
-            
+        {  
             InitializeComponent();
             this.AddHandler(Control.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
             this.Focus();
 
+            InitialiseVariables();
+
+            cleanAndDraw(oakLab);
+            Canvas.SetZIndex(YesNoCanvas, 100);
+            Canvas.SetZIndex(Player, 100);
+            Canvas.SetZIndex(PokemonInfoScreen, 200);
+        }
+
+        private void InitialiseVariables()
+        {
+            pc = new List<Pokemon>();
+            myBag = new Bag();
+            currentBagOpen = ItemType.HealAndStatus;
+            PokesSeenID = new HashSet<int>();
             currentPokeCentre = RouteName.PokeCentreR2;
 
             rs = new RouteStore();
             ms = new MoveStore();
 
             pb = new Pokebuilder(ms);
-            //pb.writePokemon();
-
-
             its = new ItemStore(pb);
             nurseJoy = its.get(ItemName.Nurse) as NurseItem;
 
             party = new Pokemon[6];
 
-            //party[0] = pb.pokesForRoute(new List<int> { 8 }, 1, 1).First();
-            //  party[1] = pb.pokesForRoute(new List<int> { 1 }, 10, 10).First();
-
-            //  party[0].Experience = (int)Math.Pow(party[0].level, 3);
-            //party[1].Experience = (int)Math.Pow(party[1].level, 3);
-
             routeSetup();
 
-
-            Canvas.SetZIndex(YesNoCanvas, 100);
-
-
-            cleanAndDraw(oakLab);
             inBattle = false;
-
-
-            myBag.Add(its.get(ItemName.FireStone));
-
-
-            Canvas.SetZIndex(Player, 100);
-
-            /*
-             myBag.Add(its.get(ItemName.PokeBall), 3);
-             myBag.Add(its.get(ItemName.Potion), 3);
-             myBag.Add(its.get(ItemName.OldRod));
-
-             myBag.Add(its.get(ItemName.MasterBall), 10);
-
-     */
-
-            Canvas.SetZIndex(PokemonInfoScreen, 200);
         }
-
-        NPC trainer;
-        NPC profOak;
-        NPC gymTurn1Trainer;
-        NPC gymLeaderTurn;
 
         private void routeSetup()
         {
@@ -429,7 +400,6 @@ namespace SilverlightApplication3
 
         }
 
-
         private bool moreAlive()
         {
             foreach (Pokemon p in party)
@@ -541,7 +511,6 @@ namespace SilverlightApplication3
 
         private void PerformMoveAction(OnMoveEventInfo v)
         {
-
             if (v != null)
             {
                 if (v.Encounter != null && (battleController == null || battleController.finalMoveFinished))
@@ -568,9 +537,6 @@ namespace SilverlightApplication3
 
         }
 
-    
-
-
         private bool invokeBattle()
         {
             var d = (currentInteraction as NPCInteraction);
@@ -587,19 +553,14 @@ namespace SilverlightApplication3
             b4.IsEnabled = false;
             return true;
         }
-
-        private BattleController battleController;
         private void battleMode(List<Pokemon> foe, bool isWild)
         {
-
             battleController = new BattleController(foe, party);
             battleController.isWildBattle = isWild;
             MyStatusLabel.Content = "";
             FoeStatusLabel.Content = "";
             PokesSeenID.Add(foe.First().Number);
             
-
-
             MySprite.Source = new BitmapImage(new Uri(("/images/back/" + party[0].Number + ".png"), UriKind.Relative));
             FoeSprite.Source = new BitmapImage(new Uri(("/images/front/" + foe.First().Number + ".png"), UriKind.Relative));
 
@@ -610,8 +571,7 @@ namespace SilverlightApplication3
             usingItem = false;
             currentBagOpen = ItemType.HealAndStatus;
             currentItem = null;
-            
-           
+             
             RouteCanvas.Visibility = Visibility.Collapsed;
             BattleCanvas.Visibility = Visibility.Visible;
 
@@ -625,25 +585,16 @@ namespace SilverlightApplication3
             b3.IsEnabled = true;
             b4.IsEnabled = true;
 
-            MyNameLabel.Content = battleController.CurrentInBattle.Name + " Lvl:" + battleController.CurrentInBattle.level;
-            FoeNameLabel.Content = battleController.CurrentFoe.Name + " Lvl:" + battleController.CurrentFoe.level;
-
-
-            /*
-            CurrentPokemon.Fill = new SolidColorBrush(Colors.Blue);
-            FoePokemon.Fill = new SolidColorBrush(Colors.Red); */
-
             dealWithDamage();
         }
-
-       
+      
         public void dealWithDamage()
         {
             if (inBattle)
             {
                 Dictionary<string, string> conRes = battleController.DealWithDamage();
 
-                
+                //set labels from battlecontroller
                 MyStatusLabel.Content = conRes["MyStatus"];
                 FoeStatusLabel.Content = conRes["FoeStatus"];
                 MyNameLabel.Content = conRes["MyName"];
@@ -652,6 +603,7 @@ namespace SilverlightApplication3
                 MyHPLabel.Content = conRes["MyHP"];
                 FoeHPLabel.Content = conRes["FoeHP"];
 
+                //status bar
                 int iWidth = 99;
                 MyHealth.Width = battleController.getHPBarWidth(battleController.CurrentInBattle) * iWidth;
                 FoeHealth.Width = battleController.getHPBarWidth(battleController.CurrentFoe) * iWidth;
@@ -660,6 +612,7 @@ namespace SilverlightApplication3
                 MyHealth.Fill = battleController.getHealthColor(battleController.CurrentInBattle);
                 FoeHealth.Fill = battleController.getHealthColor(battleController.CurrentFoe);
                 
+                //return to selecting a move
                 if (battleController.battleQueue.Count == 0)
                 {
                     b1.Content = "Fight";
@@ -679,9 +632,7 @@ namespace SilverlightApplication3
             }
 
         }
-
         
-
         private int nextSpace()
         {
             int i = 0;
@@ -695,6 +646,7 @@ namespace SilverlightApplication3
             }
             return i;
         }
+
         private void evolveScreen(Pokemon p)
         {
             int loc = Array.IndexOf(party, p);
@@ -706,10 +658,7 @@ namespace SilverlightApplication3
             EvolveCanvas.Visibility = Visibility.Visible;
             EvolveText.Text = "Congratulations! Your " + oldName + " has evolved into " + p.Name + "!";
         }
-
-
-  
-        
+       
         private void b1_Click(object sender, RoutedEventArgs e)
         {
             if (deletingAMove)
@@ -748,6 +697,65 @@ namespace SilverlightApplication3
             }
         }
 
+        private void b2_Click(object sender, RoutedEventArgs e)
+        {
+            if (deletingAMove)
+            {
+                deleteMove(1);
+                return;
+            }
+
+            if (!fightButtonPressed)
+            {
+                BagCanvas.Visibility = Visibility.Visible;
+                useButton.Content = "Use";
+                MoneyInBagTextBlock.Text = "Money: " + money;
+                BagSellQDown.Visibility = Visibility.Collapsed;
+                BagSellQUp.Visibility = Visibility.Collapsed;
+                KeyItemsButton.IsEnabled = true;
+            }
+            else
+            {
+                battleMoveSelected(new BattleAction(MyAttack, battleController.CurrentInBattle.PerformMove(1), battleController.CurrentInBattle.Name + " used " + battleController.CurrentInBattle.PerformMove(1).ToString()));
+            }
+        }
+
+        private void b3_Click(object sender, RoutedEventArgs e)
+        {
+            if (deletingAMove)
+            {
+                deleteMove(2);
+                return;
+            }
+            if (!fightButtonPressed)
+            {
+                switchScreen(false);
+            }
+            else
+            {
+                battleMoveSelected(new BattleAction(MyAttack, battleController.CurrentInBattle.PerformMove(2), battleController.CurrentInBattle.Name + " used " + battleController.CurrentInBattle.PerformMove(2).ToString()));
+
+            }
+        }
+
+        private void b4_Click(object sender, RoutedEventArgs e)
+        {
+            if (deletingAMove)
+            {
+                deleteMove(3);
+                return;
+            }
+            if (!fightButtonPressed)
+            {
+                //run implement
+                battleEnd("You ran away safely...");
+            }
+            else
+            {
+                battleMoveSelected(new BattleAction(MyAttack, battleController.CurrentInBattle.PerformMove(3), battleController.CurrentInBattle.Name + " used " + battleController.CurrentInBattle.PerformMove(3).ToString()));
+            }
+        }
+
         private MoveDictionary FoesNextAttack()
         {
             bool f = false;
@@ -776,11 +784,8 @@ namespace SilverlightApplication3
        
         private string FoeAttack()
         {
-
             if (inBattle && !battleController.finalMoveFinished)
-            {
-               
-
+            {  
                 if (battleController.FoeNextAttack.ToFoe)
                 {
                     return dealWithAttack(battleController.generalAttack(battleController.CurrentFoe, battleController.CurrentInBattle, battleController.FoeNextAttack, battleController.FoeNextAttackI, "The foe"));
@@ -791,7 +796,6 @@ namespace SilverlightApplication3
                 }
 
             }
-
             return "";
         }
 
@@ -850,48 +854,6 @@ namespace SilverlightApplication3
             textBlockBat.Text = deletingAMoveFrom.Name + " learned " + replacingMove;
         }
         
-
-        private void b2_Click(object sender, RoutedEventArgs e)
-        {
-            if (deletingAMove)
-            {
-                deleteMove(1);
-                return;
-            }
-
-            if (!fightButtonPressed)
-            {
-                BagCanvas.Visibility = Visibility.Visible;
-                useButton.Content = "Use";
-                MoneyInBagTextBlock.Text = "Money: " + money;
-                BagSellQDown.Visibility = Visibility.Collapsed;
-                BagSellQUp.Visibility = Visibility.Collapsed;
-                KeyItemsButton.IsEnabled = true;
-            }
-            else
-            {
-                battleMoveSelected(new BattleAction(MyAttack, battleController.CurrentInBattle.PerformMove(1), battleController.CurrentInBattle.Name + " used " + battleController.CurrentInBattle.PerformMove(1).ToString()));
-            }
-        }
-
-        private void b3_Click(object sender, RoutedEventArgs e)
-        {
-            if (deletingAMove)
-            {
-                deleteMove(2);
-                return;
-            }
-            if (!fightButtonPressed)
-            {
-                switchScreen(false);
-            }
-            else
-            {
-                battleMoveSelected(new BattleAction(MyAttack, battleController.CurrentInBattle.PerformMove(2), battleController.CurrentInBattle.Name + " used " + battleController.CurrentInBattle.PerformMove(2).ToString()));
-
-            }
-        }
-
         private void battleEnd(string text)
         {
             b1.IsEnabled = false;
@@ -1015,24 +977,6 @@ namespace SilverlightApplication3
 
         }
 
-        private void b4_Click(object sender, RoutedEventArgs e)
-        {
-            if (deletingAMove)
-            {
-                deleteMove(3);
-                return;
-            }
-            if (!fightButtonPressed)
-            {
-                //run implement
-                battleEnd("You ran away safely...");
-            }
-            else
-            {
-                battleMoveSelected(new BattleAction(MyAttack, battleController.CurrentInBattle.PerformMove(3), battleController.CurrentInBattle.Name + " used " + battleController.CurrentInBattle.PerformMove(3).ToString()));
-            }
-        }
-
         private void back_Click(object sender, RoutedEventArgs e)
         {
             if (inBattle)
@@ -1060,10 +1004,7 @@ namespace SilverlightApplication3
                 } else
                 {
                     party[i].heal((currentItem as HealAndStatusItem).use());
-                }
-                
-
-
+                }      
             }
 
             myBag.Remove(itemBox.SelectedItem as Item, currentBagOpen);
@@ -1076,7 +1017,6 @@ namespace SilverlightApplication3
 
         public bool AttemptCapture(Pokeball b, Pokemon w)
         {
-            // myBag.Remove(b, ItemType.Pokeball);
             itemBox.Items.Clear();
 
             if (w.ThrowBall(b))
@@ -1113,14 +1053,7 @@ namespace SilverlightApplication3
             {
                 if (inBattle)
                 {
-                    if (needEndEffects())
-                    {
-                        endOfAttackPhaseEffects();
-                    }
-                    else
-                    {
-                        dealWithDamage();
-                    }
+                   endOfAttackPhaseEffects();
                 }
             });
 
@@ -1188,12 +1121,7 @@ namespace SilverlightApplication3
 
 
         }
-        private bool needEndEffects()
-        {
-            return true;
-            //if weather
-            // return (battleController.CurrentInBattle.Status != StatusType.Null || battleController.CurrentFoe.Status != StatusType.Null);
-        }
+
         private void endOfAttackPhaseEffects()
         {
             battleController.CurrentFoe.Protection = null;
@@ -1279,7 +1207,6 @@ namespace SilverlightApplication3
             double o = Math.Pow(p.level, 3);
 
             InfoExp.Width = (Math.Max((double)p.Experience - o, 0) / (Math.Pow(p.level + 1, 3) - o)) * 160;
-
         }
 
         private void switchButtonClicked(int i)
@@ -1295,7 +1222,6 @@ namespace SilverlightApplication3
                 {
                     useOn(i);
                 }
-
             }
             else
             {
@@ -1308,7 +1234,6 @@ namespace SilverlightApplication3
                 {
                     currentLookingPartyPokemon = i;
                     showPokeInfo(party[i]);
-
                 }
             }
         }
@@ -1348,7 +1273,6 @@ namespace SilverlightApplication3
             if (battleController.CurrentInBattle.Status == StatusType.Confusion || battleController.CurrentInBattle.Status == StatusType.Infatuation || battleController.CurrentInBattle.Status == StatusType.NoHoldItem || battleController.CurrentInBattle.Status == StatusType.HealBlock || battleController.CurrentInBattle.Status == StatusType.NoImmunity || battleController.CurrentInBattle.Status == StatusType.LeechSeed || battleController.CurrentInBattle.Status == StatusType.PerishSong || battleController.CurrentInBattle.Status == StatusType.Telekenesis || battleController.CurrentInBattle.Status == StatusType.Torment || battleController.CurrentInBattle.Status == StatusType.NightMare)
             {
                 battleController.CurrentInBattle.Status = StatusType.Null;
-
             }
         }
 
@@ -1395,13 +1319,11 @@ namespace SilverlightApplication3
                 {
                     closeYesNo();
                 }
-
             }
             else
             {
                 closeYesNo();
             }
-
         }
 
         private void pokemonButton_Click(object sender, RoutedEventArgs e)
@@ -1426,11 +1348,7 @@ namespace SilverlightApplication3
         {
             itemBox.Items.Clear();
             BagCanvas.Visibility = Visibility.Collapsed;
-            if (inBattle)
-            {
-
-            }
-            else
+            if (!inBattle)
             {
                 RouteCanvas.Visibility = Visibility.Visible;
             }
@@ -1491,20 +1409,14 @@ namespace SilverlightApplication3
                 {
                     quantityBox.Text = "Quantity: 1";
                 }
-
-
-
             }
             else
             {
                 itemInfoBox.Text = "";
                 quantityBox.Text = "Quantity in bag: ";
             }
-
         }
-        private bool deletingAMove;
-        private Pokemon deletingAMoveFrom;
-        private string replacingMove;
+        
         private void LearnNewMove(Pokemon p, string m)
         {
             if (p.Moves.Where ((mov) => mov == null).Any()){
@@ -1529,9 +1441,7 @@ namespace SilverlightApplication3
                   b3.IsEnabled = true;
                   b4.IsEnabled = true;
               });
-            }
-            
-            
+            } 
         }
 
         private void checkAlive()
@@ -1548,7 +1458,7 @@ namespace SilverlightApplication3
                 battleController.CurrentInBattle.foeSwitchOutResetStatus();
                 int p = 0;
 
-
+                //process comments on exp gain/level up/new move
                 foreach (String s in comments)
                 {
                     if (s.Contains("NEW-MOVE"))
@@ -1560,8 +1470,7 @@ namespace SilverlightApplication3
                     else
                     {
                         battleController.battleQueue.Enqueue(() => textBlockBat.Text = s);
-                    }
-                   
+                    }       
                 }
 
                 if (battleController.battleEnded())
@@ -1571,7 +1480,6 @@ namespace SilverlightApplication3
                     b3.IsEnabled = false;
                     b4.IsEnabled = false;
                     battleEnd("The foe was defeated!");
-                    //if wild then win, else if have more pokemon then switch else win
                 }
                 else
                 {
@@ -1596,7 +1504,6 @@ namespace SilverlightApplication3
                 {
                     battleController.battleQueue.Enqueue(() => textBlockBat.Text = battleController.CurrentInBattle.Name + " has fainted");
                     battleController.battleQueue.Enqueue(() => switchScreen(true));
-
                 }
                 else
                 {
@@ -1609,8 +1516,11 @@ namespace SilverlightApplication3
         private void useButton_Click(object sender, RoutedEventArgs e)
         {
             if (itemBox.SelectedItem != null)
+            {
                 usingItem = true;
-            currentItem = itemBox.SelectedItem as Item;
+                currentItem = itemBox.SelectedItem as Item;
+            }
+                
             if (BagSellQUp.Visibility == Visibility.Visible)
             {
                 //selling
@@ -1627,11 +1537,12 @@ namespace SilverlightApplication3
                     if (currentItem.GetType() == typeof(EvolutionItem))
                     {
                         switchScreen((p) => { return (currentItem as EvolutionItem).CanEvolve(p.Number); });
-                    } else
+                    }
+                    else
                     {
                         switchScreen(false);
                     }
-                    
+
                 }
                 else if (currentBagOpen == ItemType.Pokeball)
                 {
@@ -1673,7 +1584,6 @@ namespace SilverlightApplication3
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-
             var doc = new XDocument();
 
             try
@@ -1762,9 +1672,6 @@ namespace SilverlightApplication3
 
 
         }
-
-
-
         private bool save(XDocument doc)
         {
             doc = new XDocument();
@@ -2089,12 +1996,9 @@ namespace SilverlightApplication3
                     } else
                     {
                         PokedexFlavourText.Text = pb.getFlavourText((PokedexSelectListBox.SelectedItem as Pokemon).Number);
-                    }
-                   
+                    }      
                 }
-                
             }
-
             PokedexSelectCanvas.Visibility = Visibility.Collapsed;
             PokedexCanvas.Visibility = Visibility.Visible;
         }
@@ -2115,7 +2019,6 @@ namespace SilverlightApplication3
                 var t = party.Where((p) => { if (p == null) { return false; } else { return p.Number == v.Number; } }).Any();
                 var y = pc.Where((p) => { return p.Number == v.Number; }).Any();
 
-
                 if ( t || y)
                 {
                     PokedexSelectListBox.Items.Add(v);
@@ -2127,17 +2030,13 @@ namespace SilverlightApplication3
                     } else
                     {
                         PokedexSelectListBox.Items.Add(new Pokemon() { Number = v.Number, Name = "???" });
-                    }
-                    
-                }
-                
+                    }                 
+                }               
             }
-
         }
 
         private void BtnClosePC_Click(object sender, RoutedEventArgs e)
         {
-
             pc.Clear();
             foreach (Pokemon p in pcPokemoLstn.Items)
             {
@@ -2159,7 +2058,6 @@ namespace SilverlightApplication3
             pcScreenCanvas.Visibility = Visibility.Collapsed;
             partyPokemonLst.Items.Clear();
             pcPokemoLstn.Items.Clear();
-
         }
     }
 }

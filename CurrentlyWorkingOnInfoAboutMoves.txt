@@ -1,0 +1,17 @@
+//CURRENTLY WORKING ON
+
+        //in thinking about importing moves
+        //normal damage dealing cat 0 - easy fine, just read xml - maybe not (thrash or other 'random-opponent' moves) (thousand waves
+        //status cat 1, should be fine, weird ones like heal-block to check
+        //stat change cat 2, should be fine, might be some weird ones i don't know about?
+        //healing moves cat 3, should be fine
+        //damage and ailment cat 4, mostly fine like ember and stuff, weird ones like wrap
+        //satatus and raise target stats (ie swagger) cat 5, should be fine
+        //damage and lower stats cat 6, should be fine i think
+        //damage raise user stats cat7, should be the same as 6
+        //damage and heal - absorb cat 8, probably fine (might not be actually not sure i save healing amount, need to check xml)
+        //one hit ko cat 9, don't know what the xml looks like for this
+        //whole field cat 10, again no idea (like trick room and stuff)
+        //one side field effect (toxic spikes, etc) cat 11, probs similar to 10
+        //force switch (roar) cat 12, no idea
+        //unique effect cat 13, will proably need hard coding
