@@ -37,10 +37,13 @@ namespace SilverlightApplication3
         private List<Pokemon> pc;
         private bool lost;
         private bool inBattle;
+<<<<<<< HEAD
         private BattleController battleController;
         private bool deletingAMove;
         private Pokemon deletingAMoveFrom;
         private string replacingMove;
+=======
+>>>>>>> 2cd9cde35f1003b65e9241509f1c1bff1ff16a72
         #endregion
 
         #region Stores
@@ -50,17 +53,24 @@ namespace SilverlightApplication3
         Pokebuilder pb;
         #endregion
 
+<<<<<<< HEAD
         #region InteractionsAndNPC
+=======
+        #region Interactions
+>>>>>>> 2cd9cde35f1003b65e9241509f1c1bff1ff16a72
         private NurseItem nurseJoy;
         private Interaction currentInteraction;
         private Interaction nextInteraction;
         NPCInteraction nurseForced;
         private bool moretoDo;
+<<<<<<< HEAD
 
         NPC trainer;
         NPC profOak;
         NPC gymTurn1Trainer;
         NPC gymLeaderTurn;
+=======
+>>>>>>> 2cd9cde35f1003b65e9241509f1c1bff1ff16a72
         #endregion
 
         #region BagAndItems
@@ -99,6 +109,7 @@ namespace SilverlightApplication3
         #endregion
 
         #endregion
+<<<<<<< HEAD
 
         public MainPage()
         {  
@@ -113,6 +124,8 @@ namespace SilverlightApplication3
             Canvas.SetZIndex(Player, 100);
             Canvas.SetZIndex(PokemonInfoScreen, 200);
         }
+=======
+>>>>>>> 2cd9cde35f1003b65e9241509f1c1bff1ff16a72
 
         private void InitialiseVariables()
         {
@@ -134,6 +147,17 @@ namespace SilverlightApplication3
             routeSetup();
 
             inBattle = false;
+<<<<<<< HEAD
+=======
+
+
+            myBag.Add(its.get(ItemName.FireStone));
+
+
+            Canvas.SetZIndex(Player, 100);
+
+            Canvas.SetZIndex(PokemonInfoScreen, 200);
+>>>>>>> 2cd9cde35f1003b65e9241509f1c1bff1ff16a72
         }
 
         private void routeSetup()
