@@ -15,13 +15,9 @@ namespace SilverlightApplication3
 {
     public partial class MainPage : UserControl
     {
-        private Route currentRoute;
-        private bool fightButtonPressed;
-        private Pokemon[] party;
-        private bool inBattle;
-        private MoveStore ms;
-        private ItemStore its;
 
+        #region GlobalVariables
+        #region RouteVariables
         private Route r1;
         private Route r2;
         private Route pokeCentreR2;
@@ -30,37 +26,53 @@ namespace SilverlightApplication3
         private Route PokeCentreTurn;
         private Route pokeMartTurn;
         private Route GymTurn;
-
-
         private RouteName currentPokeCentre;
 
-        private RouteStore rs;
+        private Route currentRoute;
+        #endregion
 
+        #region BattleVariables
+        private bool fightButtonPressed;
+        private Pokemon[] party;
+        private List<Pokemon> pc;
+        private bool lost;
+        private bool inBattle;
+        #endregion
+
+        #region Stores
+        private MoveStore ms;
+        private ItemStore its;
+        private RouteStore rs;
+        Pokebuilder pb;
+        #endregion
+
+        #region Interactions
         private NurseItem nurseJoy;
         private Interaction currentInteraction;
         private Interaction nextInteraction;
+        NPCInteraction nurseForced;
+        private bool moretoDo;
+        #endregion
+
+        #region BagAndItems
         private Bag myBag;
         private ItemType currentBagOpen;
         private Item currentItem;
-        Pokebuilder pb;
-
-        private bool spokeToOak;
-        private bool lost;
-        private List<Pokemon> pc;
-        private bool moretoDo;
-
         private bool usingItem;
-
-        const int blockSize = 40;
-
-        private int playerLeft, playerTop = 0;
-
-        private int currentLookingPartyPokemon = 0;
-
-        NPCInteraction nurseForced;
         private Item buyingItem;
         public int money = 1000;
+        #endregion
 
+        #region FrontEndVariables
+        const int blockSize = 40;
+        private int playerLeft, playerTop = 0;
+        #endregion
+
+        private bool spokeToOak; 
+        private int currentLookingPartyPokemon = 0;
+        HashSet<int> PokesSeenID;
+
+        #region Baadges
         private bool badge1 = false;
         private bool badge2 = false;
         private bool badge3 = false;
@@ -69,41 +81,18 @@ namespace SilverlightApplication3
         private bool badge6 = false;
         private bool badge7 = false;
         private bool badge8 = false;
+        #endregion
 
+        #region Trainer
         private enum gender { boy, girl };
         private gender trainerGender;
         private string trainerName;
+        #endregion
 
-        HashSet<int> PokesSeenID;
-
-
-
-        //CURRENTLY WORKING ON
-
-
-
-        //in thinking about importing moves
-        //normal damage dealing cat 0 - easy fine, just read xml - maybe not (thrash or other 'random-opponent' moves) (thousand waves
-        //status cat 1, should be fine, weird ones like heal-block to check
-        //stat change cat 2, should be fine, might be some weird ones i don't know about?
-        //healing moves cat 3, should be fine
-        //damage and ailment cat 4, mostly fine like ember and stuff, weird ones like wrap
-        //satatus and raise target stats (ie swagger) cat 5, should be fine
-        //damage and lower stats cat 6, should be fine i think
-        //damage raise user stats cat7, should be the same as 6
-        //damage and heal - absorb cat 8, probably fine (might not be actually not sure i save healing amount, need to check xml)
-        //one hit ko cat 9, don't know what the xml looks like for this
-        //whole field cat 10, again no idea (like trick room and stuff)
-        //one side field effect (toxic spikes, etc) cat 11, probs similar to 10
-        //force switch (roar) cat 12, no idea
-        //unique effect cat 13, will proably need hard coding
-
-
+        #endregion
 
         public MainPage()
         {
-            // Backing.Background = new SolidColorBrush(Colors.Black);
-            
             pc = new List<Pokemon>();
             myBag = new Bag();
             currentBagOpen = ItemType.HealAndStatus;
@@ -119,19 +108,10 @@ namespace SilverlightApplication3
             ms = new MoveStore();
 
             pb = new Pokebuilder(ms);
-            //pb.writePokemon();
-
-
             its = new ItemStore(pb);
             nurseJoy = its.get(ItemName.Nurse) as NurseItem;
 
             party = new Pokemon[6];
-
-            //party[0] = pb.pokesForRoute(new List<int> { 8 }, 1, 1).First();
-            //  party[1] = pb.pokesForRoute(new List<int> { 1 }, 10, 10).First();
-
-            //  party[0].Experience = (int)Math.Pow(party[0].level, 3);
-            //party[1].Experience = (int)Math.Pow(party[1].level, 3);
 
             routeSetup();
 
@@ -147,15 +127,6 @@ namespace SilverlightApplication3
 
 
             Canvas.SetZIndex(Player, 100);
-
-            /*
-             myBag.Add(its.get(ItemName.PokeBall), 3);
-             myBag.Add(its.get(ItemName.Potion), 3);
-             myBag.Add(its.get(ItemName.OldRod));
-
-             myBag.Add(its.get(ItemName.MasterBall), 10);
-
-     */
 
             Canvas.SetZIndex(PokemonInfoScreen, 200);
         }
