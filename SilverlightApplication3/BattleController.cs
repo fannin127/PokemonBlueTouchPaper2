@@ -170,12 +170,11 @@ namespace SilverlightApplication3
 
             return ret;
         }
-        MoveStore ms = new MoveStore();
         private MoveDictionary getRandomMove()
         {
             
             Random r = new Random();
-            return ms.get(r.Next(1, 718));
+            return MoveStore.Instance.get(r.Next(1, 718));
         }
 
         public Dictionary<string, string> generalAttack(Pokemon attacker, Pokemon defender, MoveDictionary move, int mNumber, string foeOrMe)
@@ -197,10 +196,10 @@ namespace SilverlightApplication3
                     retDic.Add("return", attacker.Name + " used mirror move!\nBut it failed!");
                     return retDic;
                 }
-                MoveDictionary md = ms.get(FoeLastUsedMove);
+                MoveDictionary md = MoveStore.Instance.get(FoeLastUsedMove);
                 if (md.ToFoe)
                 {
-                    Dictionary<string, string> dir = generalAttack(attacker, defender, ms.get(FoeLastUsedMove), mNumber, foeOrMe);
+                    Dictionary<string, string> dir = generalAttack(attacker, defender, MoveStore.Instance.get(FoeLastUsedMove), mNumber, foeOrMe);
                     dir["return"] = attacker.Name + " user mirror move!\n" + dir["return"];
                     return dir;
                 } else

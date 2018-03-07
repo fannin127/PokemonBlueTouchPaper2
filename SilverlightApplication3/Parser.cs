@@ -13,7 +13,7 @@ namespace SilverlightApplication3
 {
     public class Parser
     {
-        public ItemName parseItemName(string s)
+        public static ItemName parseItemName(string s)
         {
             if (s.ToLower() == "potion")
             {
@@ -70,7 +70,7 @@ namespace SilverlightApplication3
 
         }
 
-        public int tryParseInteger(string s, int elseReturn)
+        public static int tryParseInteger(string s, int elseReturn)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace SilverlightApplication3
             }
         }
 
-        public StatusType parseStatus(string s)
+        public static StatusType parseStatus(string s)
         {
             switch (s.ToLower())
             {
@@ -122,7 +122,7 @@ namespace SilverlightApplication3
             return StatusType.Null;
         }
 
-        public bool parseToFoe(string s)
+        public static bool parseToFoe(string s)
         {
             //TODO
             if (s == "user")
@@ -141,7 +141,7 @@ namespace SilverlightApplication3
             }
         }
 
-        public Pokemon.Stat parsePokemonStat(string s)
+        public static Pokemon.Stat parsePokemonStat(string s)
         {
             switch (s.ToLower())
             {
@@ -164,7 +164,7 @@ namespace SilverlightApplication3
             }
         }
 
-        public MoveStore.Speciality parseSpeciality(string s)
+        public static MoveStore.Speciality parseSpeciality(string s)
         {
             switch (s.ToLower())
             {
@@ -177,7 +177,7 @@ namespace SilverlightApplication3
             }
         }
 
-        public Pokemon.PokeType parsePokeType(string s)
+        public static Pokemon.PokeType parsePokeType(string s)
         {
             switch (s.ToLower())
             {
@@ -224,7 +224,7 @@ namespace SilverlightApplication3
             throw new TypeNotParseException();
         }
 
-        public MoveCategory parseMoveCategory(string s)
+        public static MoveCategory parseMoveCategory(string s)
         {
             switch (s.ToLower())
             {
@@ -260,7 +260,7 @@ namespace SilverlightApplication3
             }
         }
 
-        public RouteName parseRouteName(string rn)
+        public static RouteName parseRouteName(string rn)
         {
             if (rn == "OakLab")
             {

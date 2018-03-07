@@ -16,13 +16,25 @@ namespace SilverlightApplication3
     
     public class RouteStore
     {
+        private static RouteStore instance;
+
+        public static RouteStore Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new RouteStore();
+                }
+                return instance;
+            }
+        }
+
         private Dictionary<RouteName, Route> Routes;
         private Dictionary<Route, RouteName> reverseRoutes;
-        private Parser parser;
 
-        public RouteStore()
+        private RouteStore()
         {
-            parser = new Parser();
             Routes = new Dictionary<RouteName, Route>();
             reverseRoutes = new Dictionary<Route, RouteName>();
         }
@@ -40,7 +52,7 @@ namespace SilverlightApplication3
 
         public Route Get(string rn)
         {
-            return Get(parser.parseRouteName(rn));
+            return Get(Parser.parseRouteName(rn));
         }
 
         public RouteName Get(Route n)

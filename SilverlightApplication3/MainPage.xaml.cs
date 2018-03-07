@@ -43,17 +43,9 @@ namespace SilverlightApplication3
         private string replacingMove;
         #endregion
 
-        #region Stores
-        private MoveStore ms;
-        private ItemStore its;
-        private RouteStore rs;
-        Pokebuilder pb;
-        #endregion
-
         #region InteractionsAndNPC
         private NurseItem nurseJoy;
         private Interaction currentInteraction;
-        private Interaction nextInteraction;
         NPCInteraction nurseForced;
         private bool moretoDo;
 
@@ -122,12 +114,8 @@ namespace SilverlightApplication3
             PokesSeenID = new HashSet<int>();
             currentPokeCentre = RouteName.PokeCentreR2;
 
-            rs = new RouteStore();
-            ms = new MoveStore();
 
-            pb = new Pokebuilder(ms);
-            its = new ItemStore(pb);
-            nurseJoy = its.get(ItemName.Nurse) as NurseItem;
+            nurseJoy = ItemStore.Instance.get(ItemName.Nurse) as NurseItem;
 
             party = new Pokemon[6];
 
@@ -173,7 +161,7 @@ namespace SilverlightApplication3
             {
                 for (int j = -4; j < (4); j++)
                 {
-                    g2.Add(new Grass(j, i, null, "g" + i + j, Colors.Green, pb));
+                    g2.Add(new Grass(j, i, null, "g" + i + j, Colors.Green, Pokebuilder.Instance));
                 }
             }
             g2.Add(new MoveRoute(-4, 4, null, "TurnTown", Colors.Black, RouteName.TurnTown, 4, 4));
@@ -201,7 +189,7 @@ namespace SilverlightApplication3
             {
                 for (int j = -4; j < 4; j++)
                 {
-                    g.Add(new Grass(j, i, null, "g" + i + j, Colors.Green, pb));
+                    g.Add(new Grass(j, i, null, "g" + i + j, Colors.Green, Pokebuilder.Instance));
                 }
             }
             r1 = new Route(g, new List<int> { 150 }, 50, 48);
@@ -228,7 +216,7 @@ namespace SilverlightApplication3
 
             NPCInteraction pokeBallPick = new NPCInteraction("Hope", () => { moretoDo = false; closeYesNo(); return false; });
 
-            NPCInteraction bulbInter = new NPCInteraction("The grass pokemon, Bulbasaur", pb.pokesForTrainer(new List<int> { 1 }, new List<int> { 5 }).First(), party, () =>
+            NPCInteraction bulbInter = new NPCInteraction("The grass pokemon, Bulbasaur", Pokebuilder.Instance.pokesForTrainer(new List<int> { 1 }, new List<int> { 5 }).First(), party, () =>
             {
                 moretoDo = true;
                 openYesNo("Congratulations, you have chosen Bulbasaur as your partner, have a great journey!", true);
@@ -241,7 +229,7 @@ namespace SilverlightApplication3
             );
             bulbBall = new NPC(-3, -2, bulbInter, "bulbBall", Colors.Red);
             bulbBall.IsEnabled = false;
-            NPCInteraction charInter = new NPCInteraction("The fire pokemon, Charmander", pb.pokesForTrainer(new List<int> { 4 }, new List<int> { 5 }).First(), party, () =>
+            NPCInteraction charInter = new NPCInteraction("The fire pokemon, Charmander", Pokebuilder.Instance.pokesForTrainer(new List<int> { 4 }, new List<int> { 5 }).First(), party, () =>
             {
                 moretoDo = true;
                 openYesNo("Congratulations, you have chosen Charmander as your partner, have a great journey!", true);
@@ -254,7 +242,7 @@ namespace SilverlightApplication3
             );
             charBall = new NPC(-3, -1, charInter, "charBall", Colors.Red);
             charBall.IsEnabled = false;
-            NPCInteraction squirInter = new NPCInteraction("The water pokemon, Squirtle", pb.pokesForTrainer(new List<int> { 7 }, new List<int> { 5 }).First(), party, () =>
+            NPCInteraction squirInter = new NPCInteraction("The water pokemon, Squirtle", Pokebuilder.Instance.pokesForTrainer(new List<int> { 7 }, new List<int> { 5 }).First(), party, () =>
             {
                 moretoDo = true;
                 openYesNo("Congratulations, you have chosen Squirtle as your partner, have a great journey!", true);
@@ -290,7 +278,7 @@ namespace SilverlightApplication3
 
             PokeCentreTurn = new Route(new List<InteractableObject> { nj, PcNPC, new MoveRoute(4, 0, null, "leave", Colors.Black, RouteName.TurnTown, -1, -2) });
             PokeCentreTurn.addVoids();
-            List<Item> itemsToBuyturn = new List<Item> { its.get(ItemName.PokeBall), its.get(ItemName.Potion) };
+            List<Item> itemsToBuyturn = new List<Item> { ItemStore.Instance.get(ItemName.PokeBall), ItemStore.Instance.get(ItemName.Potion) };
 
             NPCInteraction martInter = new NPCInteraction("What would you like to buy?", () =>
             {
@@ -345,16 +333,16 @@ namespace SilverlightApplication3
             GymTurn = new Route(new List<InteractableObject> { gymTurn1Trainer, gymLeaderTurn, leaveGymTurn }, -2, 2, -6, 6);
             GymTurn.addVoids();
 
-            rs.Add(RouteName.Route1, r1);
-            rs.Add(RouteName.Route2, r2);
-            rs.Add(RouteName.PokeCentreR2, pokeCentreR2);
-            rs.Add(RouteName.OakLab, oakLab);
-            rs.Add(RouteName.TurnTown, TurnTown);
-            rs.Add(RouteName.PokeCentreTurnTown, PokeCentreTurn);
-            rs.Add(RouteName.PokeMartTurnTown, pokeMartTurn);
-            rs.Add(RouteName.GymTurnTown, GymTurn);
+            RouteStore.Instance.Add(RouteName.Route1, r1);
+            RouteStore.Instance.Add(RouteName.Route2, r2);
+            RouteStore.Instance.Add(RouteName.PokeCentreR2, pokeCentreR2);
+            RouteStore.Instance.Add(RouteName.OakLab, oakLab);
+            RouteStore.Instance.Add(RouteName.TurnTown, TurnTown);
+            RouteStore.Instance.Add(RouteName.PokeCentreTurnTown, PokeCentreTurn);
+            RouteStore.Instance.Add(RouteName.PokeMartTurnTown, pokeMartTurn);
+            RouteStore.Instance.Add(RouteName.GymTurnTown, GymTurn);
 
-            myBag.Add(its.get(ItemName.MasterBall));
+            myBag.Add(ItemStore.Instance.get(ItemName.MasterBall));
 
         }
         private void cleanAndDraw(Route n)
@@ -376,7 +364,7 @@ namespace SilverlightApplication3
 
             if (currentRoute.contains("nurseJoy"))
             {
-                currentPokeCentre = rs.Get(currentRoute);
+                currentPokeCentre = RouteStore.Instance.Get(currentRoute);
                 if (!moreAlive())
                 {
                     if (playerTop != -3 && playerLeft != 0)
@@ -531,7 +519,7 @@ namespace SilverlightApplication3
                     textBlock.Text = v.NewRoute.ToString();
                     playerLeft = v.PlayerLocLeft;
                     playerTop = v.PlayerLocTop;
-                    cleanAndDraw(rs.Get(v.NewRoute));
+                    cleanAndDraw(RouteStore.Instance.Get(v.NewRoute));
 
                 }
             }
@@ -544,11 +532,11 @@ namespace SilverlightApplication3
             //for testing only
             if (d.foeParty.First() == -999)
             {
-                battleMode(pb.SpecificPokesForTrainer(), false);
+                battleMode(Pokebuilder.Instance.SpecificPokesForTrainer(), false);
             }
             else
             {
-                battleMode(pb.pokesForTrainer(d.foeParty, d.foeLevels), false);
+                battleMode(Pokebuilder.Instance.pokesForTrainer(d.foeParty, d.foeLevels), false);
             }
 
             battleController.isWildBattle = false;
@@ -653,7 +641,7 @@ namespace SilverlightApplication3
         {
             int loc = Array.IndexOf(party, p);
             string oldName = p.Name;
-            p = pb.evolvePokemon(p);
+            p = Pokebuilder.Instance.evolvePokemon(p);
             party[loc] = p;
 
             RouteCanvas.Visibility = Visibility.Collapsed;
@@ -762,7 +750,7 @@ namespace SilverlightApplication3
         {
             bool f = false;
             Random r = new Random();
-            MoveDictionary foeMove = ms.get("Struggle");
+            MoveDictionary foeMove = MoveStore.Instance.get("Struggle");
             int i = 0;
 
             if (battleController.CurrentFoe.hasPP())
@@ -773,7 +761,7 @@ namespace SilverlightApplication3
                     if (battleController.CurrentFoe.PP[i] > 0 && battleController.CurrentFoe.Moves[i] != null)
                     {
                         f = true;
-                        foeMove = ms.get(battleController.CurrentFoe.Moves[i]);
+                        foeMove = MoveStore.Instance.get(battleController.CurrentFoe.Moves[i]);
 
                     }
                 }
@@ -834,7 +822,7 @@ namespace SilverlightApplication3
         {
             if (inBattle && !battleController.finalMoveFinished)
             {
-                MoveDictionary mov = ms.get(m);
+                MoveDictionary mov = MoveStore.Instance.get(m);
                 if (mov.ToFoe)
                 {
                     return dealWithAttack(battleController.generalAttack(battleController.CurrentInBattle, battleController.CurrentFoe, mov, Array.IndexOf(battleController.CurrentInBattle.Moves, m), ""));
@@ -883,7 +871,7 @@ namespace SilverlightApplication3
 
                 if (lost)
                 {
-                    cleanAndDraw(rs.Get(currentPokeCentre));
+                    cleanAndDraw(RouteStore.Instance.Get(currentPokeCentre));
                 }
                 else
                 {
@@ -1026,7 +1014,7 @@ namespace SilverlightApplication3
 
             if (w.ThrowBall(b))
             {
-                w.MovesOnLevel = pb.MovesOnLevelForPokemon(w.Number);
+                w.MovesOnLevel = Pokebuilder.Instance.MovesOnLevelForPokemon(w.Number);
                 int s = nextSpace();
                 if (s == 6)
                 {
@@ -1063,7 +1051,7 @@ namespace SilverlightApplication3
             });
 
             MoveDictionary foeMove = FoesNextAttack();
-            int myMovePriorty = ms.get(b.md).Priority;
+            int myMovePriorty = MoveStore.Instance.get(b.md).Priority;
 
             BattleCanvas.Visibility = Visibility.Visible;
             battleController.finalMoveFinished = false;
@@ -1638,7 +1626,7 @@ namespace SilverlightApplication3
 
             var elem = doc.Element("Save");
 
-            currentRoute = rs.Get(elem.Element("route").Value);
+            currentRoute = RouteStore.Instance.Get(elem.Element("route").Value);
             playerTop = Int32.Parse(elem.Element("playerTop").Value);
             playerLeft = Int32.Parse(elem.Element("playerLeft").Value);
             trainerName = elem.Element("playerName").Value;
@@ -1652,7 +1640,7 @@ namespace SilverlightApplication3
                 trainerGender = gender.girl;
             }
 
-            var p = pb.openPokes(elem.Element("party")).ToArray();
+            var p = Pokebuilder.Instance.openPokes(elem.Element("party")).ToArray();
             for (int i = 0; i < 6; ++i)
             {
                 try
@@ -1665,7 +1653,7 @@ namespace SilverlightApplication3
                 }
             }
 
-            pc = pb.openPokes(elem.Element("pc"));
+            pc = Pokebuilder.Instance.openPokes(elem.Element("pc"));
 
             var seenPokes = elem.Element("PokemonSeen");
             foreach (var v in seenPokes.Elements())
@@ -1687,15 +1675,15 @@ namespace SilverlightApplication3
         {
             doc = new XDocument();
             var saveFile = new XElement("Save");
-            var route = new XElement("route", rs.Get(currentRoute));
+            var route = new XElement("route", RouteStore.Instance.Get(currentRoute));
             var pTop = new XElement("playerTop", playerTop);
             var pLeft = new XElement("playerLeft", playerLeft);
             var playerName = new XElement("playerName", trainerName);
             var playerGender = new XElement("playerGender", trainerGender);
 
             saveFile.Add(route);
-            saveFile.Add(pb.savePokes(party, "party"));
-            saveFile.Add(pb.savePokes(pc.ToArray(), "pc"));
+            saveFile.Add(Pokebuilder.Instance.savePokes(party, "party"));
+            saveFile.Add(Pokebuilder.Instance.savePokes(pc.ToArray(), "pc"));
             saveFile.Add(pTop);
             saveFile.Add(pLeft);
             saveFile.Add(playerName);
@@ -2008,7 +1996,7 @@ namespace SilverlightApplication3
                     }
                     else
                     {
-                        PokedexFlavourText.Text = pb.getFlavourText((PokedexSelectListBox.SelectedItem as Pokemon).Number);
+                        PokedexFlavourText.Text = Pokebuilder.Instance.getFlavourText((PokedexSelectListBox.SelectedItem as Pokemon).Number);
                     }
                 }
             }
@@ -2027,7 +2015,7 @@ namespace SilverlightApplication3
 
         private void addRowsToPokedexGrid()
         {
-            foreach (var v in pb.getAllPokesIDName())
+            foreach (var v in Pokebuilder.Instance.getAllPokesIDName())
             {
                 var t = party.Where((p) => { if (p == null) { return false; } else { return p.Number == v.Number; } }).Any();
                 var y = pc.Where((p) => { return p.Number == v.Number; }).Any();

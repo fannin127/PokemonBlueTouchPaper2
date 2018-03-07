@@ -31,7 +31,6 @@ namespace SilverlightApplication3
         public int statAmount { get; private set; }
         public bool statToFoe { get; private set; }
 
-        private Parser parser = new Parser();
         public bool AttackAll { get; private set; }
 
         public bool IncreasinglyUnlikely { get; private set; }
@@ -101,7 +100,7 @@ namespace SilverlightApplication3
             {
                 AttackAll = true;
             }
-            ToFoe = parser.parseToFoe(toFoe);
+            ToFoe = Parser.parseToFoe(toFoe);
             Priority = pri;
         }
 
@@ -112,8 +111,8 @@ namespace SilverlightApplication3
             {
                 AttackAll = true;
             }
-            ToFoe = parser.parseToFoe(toFoe);
-            statToFoe = parser.parseToFoe(toFoe);
+            ToFoe = Parser.parseToFoe(toFoe);
+            statToFoe = Parser.parseToFoe(toFoe);
             statAmount = d;
             StatLikeliness = 100;
         }
@@ -134,9 +133,9 @@ namespace SilverlightApplication3
             {
                 AttackAll = true;
             }
-            ToFoe = parser.parseToFoe(atkToFoe);
+            ToFoe = Parser.parseToFoe(atkToFoe);
             StatLikeliness = statLikeliness;
-            this.statToFoe = parser.parseToFoe(statToFoe);
+            this.statToFoe = Parser.parseToFoe(statToFoe);
             Priority = pri;
         }
 
@@ -153,10 +152,10 @@ namespace SilverlightApplication3
             {
                 AttackAll = true;
             }
-            ToFoe = parser.parseToFoe(statusToFoe);
+            ToFoe = Parser.parseToFoe(statusToFoe);
             StatsToChange = statsToChange;
             statAmount = statVal;
-            this.statToFoe = parser.parseToFoe(statToFoe);
+            this.statToFoe = Parser.parseToFoe(statToFoe);
             Priority = pri;
         }
 
@@ -167,7 +166,7 @@ namespace SilverlightApplication3
             {
                 AttackAll = true;
             }
-            ToFoe = parser.parseToFoe(toFoe);
+            ToFoe = Parser.parseToFoe(toFoe);
             StatusLikliness = 100;
         }
 
@@ -219,7 +218,7 @@ namespace SilverlightApplication3
             {
                 AttackAll = true;
             }
-            ToFoe = parser.parseToFoe(toFoe);
+            ToFoe = Parser.parseToFoe(toFoe);
             Priority = pri;
         }
 

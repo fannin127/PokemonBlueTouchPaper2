@@ -20,10 +20,22 @@ namespace SilverlightApplication3
     {
         private HashSet<MoveDictionary> moves;
         private MoveDictionary struggleMove;
-        private Parser parser;
-        public MoveStore()
+
+        private static MoveStore instance;
+
+        public static MoveStore Instance
         {
-            parser = new Parser();
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new MoveStore();
+                }
+                return instance;
+            }
+        }
+        private MoveStore()
+        {
             moves = new HashSet<MoveDictionary>();
             createMoves();
         }
@@ -199,88 +211,88 @@ namespace SilverlightApplication3
                 var query = (from mo in doc.Elements("Moves").Elements("Move") where mo.Element("Name").Value == m select mo).ToArray()[0];
 
                 
-                if (parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.Attacking)
+                if (Parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.Attacking)
                 {
-                    md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("Damage").Value), int.Parse(query.Element("PP").Value), parser.parsePokeType(query.Element("Type").Value), parser.parseSpeciality(query.Element("Speciality").Value), parser.parseMoveCategory(query.Element("StatusValue").Value), parser.tryParseInteger(query.Element("Accuracy").Value, 100), int.Parse(query.Element("Priority").Value), query.Element("ToFoe").Value);
+                    md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("Damage").Value), int.Parse(query.Element("PP").Value), Parser.parsePokeType(query.Element("Type").Value), Parser.parseSpeciality(query.Element("Speciality").Value), Parser.parseMoveCategory(query.Element("StatusValue").Value), Parser.tryParseInteger(query.Element("Accuracy").Value, 100), int.Parse(query.Element("Priority").Value), query.Element("ToFoe").Value);
                 }
-                else if (parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.StatChange)
+                else if (Parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.StatChange)
                 {
                     int val = 0;
                     List<Pokemon.Stat> stats = new List<Pokemon.Stat>();
                     foreach (var v in query.Elements("StatChanges"))
                     {
                         val = int.Parse(v.Element("StatAmount").Value);
-                        stats.Add(parser.parsePokemonStat(v.Element("StatToChange").Value));
+                        stats.Add(Parser.parsePokemonStat(v.Element("StatToChange").Value));
                     }
-                    md = new MoveDictionary(query.Element("Name").Value, val, int.Parse(query.Element("PP").Value), parser.parsePokeType(query.Element("Type").Value), Speciality.Null, MoveCategory.StatChange, parser.tryParseInteger(query.Element("Accuracy").Value, 100), stats, query.Element("ToFoe").Value, int.Parse(query.Element("Priority").Value));
-                } else if (parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.DamageAndLower || parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.DamageAndRaise)
+                    md = new MoveDictionary(query.Element("Name").Value, val, int.Parse(query.Element("PP").Value), Parser.parsePokeType(query.Element("Type").Value), Speciality.Null, MoveCategory.StatChange, Parser.tryParseInteger(query.Element("Accuracy").Value, 100), stats, query.Element("ToFoe").Value, int.Parse(query.Element("Priority").Value));
+                } else if (Parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.DamageAndLower || Parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.DamageAndRaise)
                 {
                     int val = 0;
                     List<Pokemon.Stat> stats = new List<Pokemon.Stat>();
                     val = int.Parse(query.Element("StatChanges").Element("StatAmount").Value);
                     foreach (var v in query.Element("StatChanges").Elements("StatToChange"))
                     {
-                        stats.Add(parser.parsePokemonStat(v.Value));
+                        stats.Add(Parser.parsePokemonStat(v.Value));
                     }
 
-                    if (parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.DamageAndLower)
+                    if (Parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.DamageAndLower)
                     {
-                        md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("Damage").Value), val, int.Parse(query.Element("PP").Value), parser.parsePokeType(query.Element("Type").Value), parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.DamageAndLower, parser.tryParseInteger(query.Element("Accuracy").Value, 100), stats, "foe", "foe", int.Parse(query.Element("StatChance").Value), int.Parse(query.Element("Priority").Value));
+                        md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("Damage").Value), val, int.Parse(query.Element("PP").Value), Parser.parsePokeType(query.Element("Type").Value), Parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.DamageAndLower, Parser.tryParseInteger(query.Element("Accuracy").Value, 100), stats, "foe", "foe", int.Parse(query.Element("StatChance").Value), int.Parse(query.Element("Priority").Value));
                     }
                     else
                     {
-                        md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("Damage").Value), val, int.Parse(query.Element("PP").Value), parser.parsePokeType(query.Element("Type").Value), parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.DamageAndRaise, parser.tryParseInteger(query.Element("Accuracy").Value, 100), stats, "foe", "user", int.Parse(query.Element("StatChance").Value), int.Parse(query.Element("Priority").Value));
+                        md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("Damage").Value), val, int.Parse(query.Element("PP").Value), Parser.parsePokeType(query.Element("Type").Value), Parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.DamageAndRaise, Parser.tryParseInteger(query.Element("Accuracy").Value, 100), stats, "foe", "user", int.Parse(query.Element("StatChance").Value), int.Parse(query.Element("Priority").Value));
                     }
 
-                } else if (parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.Status)
+                } else if (Parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.Status)
                 {
-                    md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("PP").Value), parser.parsePokeType(query.Element("Type").Value), Speciality.Null, MoveCategory.Status, parser.tryParseInteger(query.Element("Accuracy").Value, 100), parser.parseStatus(query.Element("Status").Value), query.Element("ToFoe").Value, int.Parse(query.Element("Priority").Value)); 
-                } else if (parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.DamageAndAilement)
+                    md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("PP").Value), Parser.parsePokeType(query.Element("Type").Value), Speciality.Null, MoveCategory.Status, Parser.tryParseInteger(query.Element("Accuracy").Value, 100), Parser.parseStatus(query.Element("Status").Value), query.Element("ToFoe").Value, int.Parse(query.Element("Priority").Value)); 
+                } else if (Parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.DamageAndAilement)
                 {
-                    md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("Damage").Value), int.Parse(query.Element("PP").Value), parser.parsePokeType(query.Element("Type").Value), parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.DamageAndAilement, parser.tryParseInteger(query.Element("Accuracy").Value, 100), parser.parseStatus(query.Element("Status").Value), query.Element("ToFoe").Value, int.Parse(query.Element("StatusChance").Value), int.Parse(query.Element("Priority").Value));
-                } else if (parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.Healing)
+                    md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("Damage").Value), int.Parse(query.Element("PP").Value), Parser.parsePokeType(query.Element("Type").Value), Parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.DamageAndAilement, Parser.tryParseInteger(query.Element("Accuracy").Value, 100), Parser.parseStatus(query.Element("Status").Value), query.Element("ToFoe").Value, int.Parse(query.Element("StatusChance").Value), int.Parse(query.Element("Priority").Value));
+                } else if (Parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.Healing)
                 {
-                    md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("Healing").Value), int.Parse(query.Element("PP").Value), parser.parsePokeType(query.Element("Type").Value), parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.Healing, parser.tryParseInteger(query.Element("Accuracy").Value, 100), int.Parse(query.Element("Priority").Value), query.Element("ToFoe").Value);
-                } else if (parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.StatusAndRaiseStats)
+                    md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("Healing").Value), int.Parse(query.Element("PP").Value), Parser.parsePokeType(query.Element("Type").Value), Parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.Healing, Parser.tryParseInteger(query.Element("Accuracy").Value, 100), int.Parse(query.Element("Priority").Value), query.Element("ToFoe").Value);
+                } else if (Parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.StatusAndRaiseStats)
                 {
                     int val = 0;
                     List<Pokemon.Stat> stats = new List<Pokemon.Stat>();
-                    val = parser.tryParseInteger(query.Element("StatChanges").Element("StatAmount").Value, 1);
+                    val = Parser.tryParseInteger(query.Element("StatChanges").Element("StatAmount").Value, 1);
                     foreach (var v in query.Element("StatChanges").Elements("StatToChange"))
                     {
-                        stats.Add(parser.parsePokemonStat(v.Value));
+                        stats.Add(Parser.parsePokemonStat(v.Value));
                     }
                     if (stats.Count == 0){
                         stats.Add(Pokemon.Stat.Speed);
                     }
-                    md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("PP").Value), parser.parsePokeType(query.Element("Type").Value), parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.StatusAndRaiseStats, parser.tryParseInteger(query.Element("Accuracy").Value, 100), parser.parseStatus(query.Element("Status").Value), "foe", stats, val, "foe", int.Parse(query.Element("Priority").Value));
-                } else if (parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.Absorbing)
+                    md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("PP").Value), Parser.parsePokeType(query.Element("Type").Value), Parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.StatusAndRaiseStats, Parser.tryParseInteger(query.Element("Accuracy").Value, 100), Parser.parseStatus(query.Element("Status").Value), "foe", stats, val, "foe", int.Parse(query.Element("Priority").Value));
+                } else if (Parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.Absorbing)
                 {
-                    md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("Damage").Value), int.Parse(query.Element("PP").Value), parser.parsePokeType(query.Element("Type").Value), parser.parseSpeciality(query.Element("Speciality").Value), parser.parseMoveCategory(query.Element("StatusValue").Value), parser.tryParseInteger(query.Element("Accuracy").Value, 100), query.Element("ToFoe").Value, int.Parse(query.Element("Drain").Value), int.Parse(query.Element("Priority").Value));
-                } else if (parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.KO)
+                    md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("Damage").Value), int.Parse(query.Element("PP").Value), Parser.parsePokeType(query.Element("Type").Value), Parser.parseSpeciality(query.Element("Speciality").Value), Parser.parseMoveCategory(query.Element("StatusValue").Value), Parser.tryParseInteger(query.Element("Accuracy").Value, 100), query.Element("ToFoe").Value, int.Parse(query.Element("Drain").Value), int.Parse(query.Element("Priority").Value));
+                } else if (Parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.KO)
                 {
-                    md = new MoveDictionary(query.Element("Name").Value, 0, int.Parse(query.Element("PP").Value), parser.parsePokeType(query.Element("Type").Value), parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.KO, parser.tryParseInteger(query.Element("Accuracy").Value, 100), int.Parse(query.Element("Priority").Value), query.Element("ToFoe").Value);
-                } else if (parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.Field)
+                    md = new MoveDictionary(query.Element("Name").Value, 0, int.Parse(query.Element("PP").Value), Parser.parsePokeType(query.Element("Type").Value), Parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.KO, Parser.tryParseInteger(query.Element("Accuracy").Value, 100), int.Parse(query.Element("Priority").Value), query.Element("ToFoe").Value);
+                } else if (Parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.Field)
                 {
                     if (query.Name == "Haze") //bit more unique than others in the same group
                     {
-                        md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("PP").Value), parser.parsePokeType(query.Element("Type").Value), parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.Field, parser.tryParseInteger(query.Element("Accuracy").Value, 100), PerformUniqueMove(query.Element("Name").Value), int.Parse(query.Element("Priority").Value));
+                        md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("PP").Value), Parser.parsePokeType(query.Element("Type").Value), Parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.Field, Parser.tryParseInteger(query.Element("Accuracy").Value, 100), PerformUniqueMove(query.Element("Name").Value), int.Parse(query.Element("Priority").Value));
                     } else
                     {
-                        md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("PP").Value), parser.parsePokeType(query.Element("Type").Value), parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.Field, parser.tryParseInteger(query.Element("Accuracy").Value, 100), (bool b) => { b = true; }, int.Parse(query.Element("Priority").Value));
+                        md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("PP").Value), Parser.parsePokeType(query.Element("Type").Value), Parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.Field, Parser.tryParseInteger(query.Element("Accuracy").Value, 100), (bool b) => { b = true; }, int.Parse(query.Element("Priority").Value));
                     }
-                } else if (parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.SideField)
+                } else if (Parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.SideField)
                 {
                     if (query.Element("Name").Value == "spikes" || query.Element("Name").Value == "toxic-spikes" || query.Element("Name").Value == "stealth-rock" || query.Element("Name").Value == "sticky-web" || query.Element("Name").Value == "light-screen" || query.Element("Name").Value == "reflect" || query.Element("Name").Value == "mist" || query.Element("Name").Value == "safeguard" || query.Element("Name").Value == "tailwind" ||  query.Element("Name").Value == "lucky-chant" || query.Element("Name").Value == "aurora-veil") 
                     {
-                        md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("PP").Value), parser.parsePokeType(query.Element("Type").Value), parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.SideField, parser.tryParseInteger(query.Element("Accuracy").Value, 100), query.Element("ToFoe").Value, getUniqueActionOnePokemon(query.Element("Name").Value), int.Parse(query.Element("Priority").Value));
+                        md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("PP").Value), Parser.parsePokeType(query.Element("Type").Value), Parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.SideField, Parser.tryParseInteger(query.Element("Accuracy").Value, 100), query.Element("ToFoe").Value, getUniqueActionOnePokemon(query.Element("Name").Value), int.Parse(query.Element("Priority").Value));
                     } else
                     {
-                        md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("PP").Value), parser.parsePokeType(query.Element("Type").Value), parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.SideField, parser.tryParseInteger(query.Element("Accuracy").Value, 100), getUniqueProtectionAction(query.Element("Name").Value), int.Parse(query.Element("Priority").Value));
+                        md = new MoveDictionary(query.Element("Name").Value, int.Parse(query.Element("PP").Value), Parser.parsePokeType(query.Element("Type").Value), Parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.SideField, Parser.tryParseInteger(query.Element("Accuracy").Value, 100), getUniqueProtectionAction(query.Element("Name").Value), int.Parse(query.Element("Priority").Value));
                     }
-                } else if (parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.Switch)
+                } else if (Parser.parseMoveCategory(query.Element("StatusValue").Value) == MoveCategory.Switch)
                 {
-                    md = new MoveDictionary(query.Element("Name").Value, parser.parsePokeType(query.Element("Type").Value), parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.Switch, int.Parse(query.Element("PP").Value), parser.tryParseInteger(query.Element("Accuracy").Value, 100), int.Parse(query.Element("Priority").Value));
+                    md = new MoveDictionary(query.Element("Name").Value, Parser.parsePokeType(query.Element("Type").Value), Parser.parseSpeciality(query.Element("Speciality").Value), MoveCategory.Switch, int.Parse(query.Element("PP").Value), Parser.tryParseInteger(query.Element("Accuracy").Value, 100), int.Parse(query.Element("Priority").Value));
                 }
 
                 return md;

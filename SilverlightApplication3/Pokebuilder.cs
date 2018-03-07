@@ -21,12 +21,24 @@ namespace SilverlightApplication3
 {
     public class Pokebuilder
     {
-        MoveStore ms;
-        Parser parser;
-        public Pokebuilder(MoveStore ms)
+
+        private static Pokebuilder instance;
+
+        public static Pokebuilder Instance
         {
-            parser = new Parser();
-            this.ms = ms;
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new Pokebuilder();
+                }
+                return instance;
+            }
+        }
+
+        private Pokebuilder()
+        {
+            //nothing to be done but should be private 
         }
 
         //for testing only
@@ -61,7 +73,7 @@ namespace SilverlightApplication3
 
                 for (int i = 0; i < 4; i++)
                 {
-                    pp[i] = ms.get(m[i]).PP;
+                    pp[i] = MoveStore.Instance.get(m[i]).PP;
                 }
                 return pp;
             } catch (Exception)
@@ -140,12 +152,12 @@ namespace SilverlightApplication3
                     moves[i] = m.Element("Name").Value;
                     i++;
                 }
-                Pokemon pok = new Pokemon(Int32.Parse(q.Element("Number").Value), q.Element("Name").Value, lvl, parser.parsePokeType(q.Element("TypeOne").Value), parser.parsePokeType(q.Element("TypeTwo").Value), moves, Int32.Parse(q.Element("HP").Value), -9, Int32.Parse(q.Element("Attack").Value), Int32.Parse(q.Element("Defense").Value), Int32.Parse(q.Element("Sp.Atk").Value), Int32.Parse(q.Element("Sp.Def").Value), Int32.Parse(q.Element("Speed").Value), Int32.Parse(q.Element("CatchRate").Value));
+                Pokemon pok = new Pokemon(Int32.Parse(q.Element("Number").Value), q.Element("Name").Value, lvl, Parser.parsePokeType(q.Element("TypeOne").Value), Parser.parsePokeType(q.Element("TypeTwo").Value), moves, Int32.Parse(q.Element("HP").Value), -9, Int32.Parse(q.Element("Attack").Value), Int32.Parse(q.Element("Defense").Value), Int32.Parse(q.Element("Sp.Atk").Value), Int32.Parse(q.Element("Sp.Def").Value), Int32.Parse(q.Element("Speed").Value), Int32.Parse(q.Element("CatchRate").Value));
 
                 var evolQ = from ev in q.Elements("Evolutions").Elements("Evolution") select ev;
 
                 List<EvolutionTrigger> evoList = new List<EvolutionTrigger>();
-                ItemStore its = new ItemStore();
+
                 foreach (var t in evolQ)
                 {
                     int into = int.Parse(t.Element("Evolves").Value);
@@ -161,7 +173,7 @@ namespace SilverlightApplication3
                             evoList.Add(new EvolutionTrigger(into));
                         } else
                         {
-                            evoList.Add(new EvolutionTrigger(parser.parseItemName(t.Element("EvolveLevel").Value), into));
+                            evoList.Add(new EvolutionTrigger(Parser.parseItemName(t.Element("EvolveLevel").Value), into));
                         }
                     }
                 }
@@ -206,7 +218,7 @@ namespace SilverlightApplication3
                     pp[i] = int.Parse(ppp.Value);
                     ++i;
                 }
-                pokes.Add(new Pokemon(Int32.Parse(p.Element("Number").Value), p.Element("Name").Value, Int32.Parse(p.Element("Level").Value),  parser.parsePokeType(p.Element("TypeOne").Value), parser.parsePokeType(p.Element("TypeTwo").Value), movD, Int32.Parse(p.Element("HP").Value), Int32.Parse(p.Element("currentHP").Value), Int32.Parse(p.Element("Atk").Value), Int32.Parse(p.Element("Def").Value), Int32.Parse(p.Element("SpAtk").Value), Int32.Parse(p.Element("SpDef").Value), Int32.Parse(p.Element("Speed").Value), 0));
+                pokes.Add(new Pokemon(Int32.Parse(p.Element("Number").Value), p.Element("Name").Value, Int32.Parse(p.Element("Level").Value),  Parser.parsePokeType(p.Element("TypeOne").Value), Parser.parsePokeType(p.Element("TypeTwo").Value), movD, Int32.Parse(p.Element("HP").Value), Int32.Parse(p.Element("currentHP").Value), Int32.Parse(p.Element("Atk").Value), Int32.Parse(p.Element("Def").Value), Int32.Parse(p.Element("SpAtk").Value), Int32.Parse(p.Element("SpDef").Value), Int32.Parse(p.Element("Speed").Value), 0));
                 pokes.Last().Experience = int.Parse(p.Element("Experience").Value);
                 pokes.Last().PP = pp;
 
