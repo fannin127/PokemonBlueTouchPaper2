@@ -25,10 +25,8 @@ namespace SilverlightApplication3
         }
 
 
-
         public override OnMoveEventInfo OnMoveEvent()
         {
-
             if (isEncounter())
             {
                 OnMoveEventInfo omi = new OnMoveEventInfo();
@@ -38,7 +36,6 @@ namespace SilverlightApplication3
             }
 
             return null;
- 
         }
         public bool isEncounter()
         {
