@@ -43,6 +43,11 @@ namespace SilverlightApplication3
             this.desc = text;
         }
 
+        public BattleAction(string text)
+        {
+            desc = text;
+        }
+
         public bool isAttacking()
         {
             return m != null;
@@ -50,8 +55,14 @@ namespace SilverlightApplication3
 
         public string Act()
         {
-            desc = m?.Invoke(md);
-            useOn?.Invoke(u);
+            if (m != null)
+            {
+                desc = m.Invoke(md);
+            }
+            if (useOn != null)
+            {
+                useOn.Invoke(u);
+            }
             
             if (capt != null)
             {

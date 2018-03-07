@@ -1552,7 +1552,14 @@ namespace SilverlightApplication3
                         BagCanvas.Visibility = Visibility.Collapsed;
                         SwitchCanvas.Visibility = Visibility.Collapsed;
                         myBag.Remove(currentItem, ItemType.Pokeball);
-                        battleMoveSelected(new BattleAction(AttemptCapture, currentItem as Pokeball, battleController.CurrentFoe, ""));
+                        if (battleController.isWildBattle)
+                        {
+                            battleMoveSelected(new BattleAction(AttemptCapture, currentItem as Pokeball, battleController.CurrentFoe, ""));
+                        } else
+                        {
+                            battleMoveSelected(new BattleAction("The foe trainer knocked the ball away!"));
+                        }
+                        
                     }
 
                 }
