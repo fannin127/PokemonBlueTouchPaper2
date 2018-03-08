@@ -668,6 +668,11 @@ namespace SilverlightApplication3
         #endregion
 
         #region Battle
+
+        public bool NeedEndOfTurnEffects()
+        {
+            return (Status == StatusType.Poison || Status == StatusType.Burn || Ingrained || Leeched || Leeching || NightMared || Perished);
+        }
         public string EndOfTurnEffects(int leechingAmount)
         {
             string ret = "";

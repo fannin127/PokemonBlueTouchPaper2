@@ -1122,13 +1122,16 @@ namespace SilverlightApplication3
             battleController.CurrentFoe.Protection = null;
             battleController.CurrentInBattle.Protection = null;
             //weather like hail and sandstorm
-            battleController.battleQueue.Enqueue(() => { textBlockBat.Text = battleController.EndOfAttackPhaseEffects(); dealWithDamage(); });
-            string ret = "";
 
+            string ret = battleController.EndOfAttackPhaseEffects();
+            if (ret != "")
+            {
+                battleController.battleQueue.Enqueue(() => { textBlockBat.Text = ret; dealWithDamage(); });
+            }
+            
             if (battleController.CurrentFoe.Leeching)
             {
-                ret = battleController.CurrentFoe.EndOfTurnEffects((int)(Math.Ceiling(0.3 * battleController.CurrentInBattle.CurrentHP)));
-                if (ret != "")
+                if (battleController.CurrentFoe.NeedEndOfTurnEffects())
                 {
                     battleController.battleQueue.Enqueue(() =>
                     {
@@ -1141,8 +1144,7 @@ namespace SilverlightApplication3
             }
             else
             {
-                ret = battleController.CurrentFoe.EndOfTurnEffects(0);
-                if (ret != "")
+                if (battleController.CurrentFoe.NeedEndOfTurnEffects())
                 {
                     battleController.battleQueue.Enqueue(() =>
                     {
@@ -1156,8 +1158,7 @@ namespace SilverlightApplication3
 
             if (battleController.CurrentInBattle.Leeching)
             {
-                ret = battleController.CurrentInBattle.EndOfTurnEffects((int)(Math.Ceiling(0.3 * battleController.CurrentFoe.CurrentHP)));
-                if (ret != "")
+                if (battleController.CurrentInBattle.NeedEndOfTurnEffects())
                 {
                     battleController.battleQueue.Enqueue(() => {
                         textBlockBat.Text = battleController.CurrentInBattle.EndOfTurnEffects((int)(Math.Ceiling(0.3 * battleController.CurrentFoe.CurrentHP)));
@@ -1169,8 +1170,7 @@ namespace SilverlightApplication3
             }
             else
             {
-                ret = battleController.CurrentInBattle.EndOfTurnEffects(0);
-                if (ret != "")
+                if (battleController.CurrentInBattle.NeedEndOfTurnEffects())
                 {
                     battleController.battleQueue.Enqueue(() => {
                         textBlockBat.Text = battleController.CurrentInBattle.EndOfTurnEffects(0);
