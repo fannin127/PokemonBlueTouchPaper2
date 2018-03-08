@@ -215,7 +215,7 @@ namespace SilverlightApplication3
         }
         public bool hasPP()
         {
-            return (PP[0] > 0 && PP[1] > 0 && PP[2] > 0 && PP[3] > 0);
+            return (PP[0] > 0 || PP[1] > 0 || PP[2] > 0 || PP[3] > 0);
         }
 
         public string PerformMove(int moveNo)

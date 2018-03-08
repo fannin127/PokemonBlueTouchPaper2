@@ -757,7 +757,7 @@ namespace SilverlightApplication3
             {
                 while (f == false)
                 {
-                    i = r.Next(0, 3);
+                    i = r.Next(0, 4);
                     if (battleController.CurrentFoe.PP[i] > 0 && battleController.CurrentFoe.Moves[i] != null)
                     {
                         f = true;
