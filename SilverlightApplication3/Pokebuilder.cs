@@ -189,6 +189,7 @@ namespace SilverlightApplication3
         public Pokemon evolvePokemon(Pokemon p)
         {
             Pokemon t = pokesForTrainer(new List<int> { p.toEvolve }, new List<int> { p.level }).First();
+            t.Moves = p.Moves;
 
             t.level = p.level;
             t.Experience = p.Experience;
