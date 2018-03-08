@@ -177,13 +177,18 @@ namespace SilverlightApplication3
                         }
                     }
                 }
+
+                var abilityQ = from ab in query.Elements("Abilities").Elements("Ability") select ab.Value;
+
+                int ran = r.Next(0, abilityQ.Count());
+
+                pok.ability = new Ability(abilityQ.ToArray()[ran]);
+
                 pok.evolvesInto = evoList;
                 pok.PP = getPPArray(moves);
                 ret.Add(pok);
-            }
-           
+            } 
             return ret;
-
         }
 
         public Pokemon evolvePokemon(Pokemon p)
@@ -225,6 +230,7 @@ namespace SilverlightApplication3
 
                 pokes.Last().evolvesInto = getEvolutionTriggers(pokes.Last().Number);
                 pokes.Last().MovesOnLevel = MovesOnLevelForPokemon(int.Parse(p.Element("Number").Value));
+                pokes.Last().ability = new Ability(p.Element("Ability").Value);
             }
 
             return pokes;
@@ -247,6 +253,7 @@ namespace SilverlightApplication3
 
                     XElement poke = new XElement("poke");
                     poke.Add(new XElement("Number", p.Number));
+                    poke.Add(new XElement("Ability", p.ability.Name));
                     poke.Add(new XElement("Experience", p.Experience));
                     poke.Add(new XElement("Level", p.level));
                     poke.Add(new XElement("Speed", d["Speed"]));

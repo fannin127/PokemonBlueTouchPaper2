@@ -16,6 +16,7 @@ namespace SilverlightApplication3
         public int level { get; set; }
         public StatusType Status { get; set; }
         public int captureRate { get; }
+        public Ability ability { get; set; }
         public enum PokeType { Water, Grass, Fire, Normal, Poison, Psychic, Dark, Ground, Fighting, Rock, Electric, Bug, Fairy, Ghost, Dragon, Ice, Flying, Steel, Null };
 
         private int sleepCounter = 0;
@@ -315,7 +316,10 @@ namespace SilverlightApplication3
 
         public string getStatsInfo()
         {
-            string s = "HP: " + CurrentHP + "/" + HP;
+            string s = "Ability: " + ability.Name ;
+            s += "\n";
+            s += "\n";
+            s +="HP: " + CurrentHP + "/" + HP;
             s += "\n";
             s += "Attack: " + Attack;
             s += "\n";
