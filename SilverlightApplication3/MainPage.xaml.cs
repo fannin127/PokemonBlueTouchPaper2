@@ -120,8 +120,6 @@ namespace SilverlightApplication3
             party = new Pokemon[6];
 
             routeSetup();
-
-            inBattle = false;
         }
 
         private void routeSetup()
@@ -169,7 +167,7 @@ namespace SilverlightApplication3
 
             NPCInteraction trainerInter = new NPCInteraction("Hey! Are you ready to battle?", invokeBattle);
             trainerInter.Forced = true;
-            trainerInter.foeParty = new List<int> { -999 };
+            trainerInter.foeParty = new List<int> { 1, 1 };
             trainerInter.foeLevels = new List<int> { 3, 3 };
             trainer = new NPC(1, (-2), trainerInter, "Trainer", Colors.Cyan);
             trainer.facing = Route.direction.West;
@@ -485,12 +483,20 @@ namespace SilverlightApplication3
             }
             else
             {
+                var t = "";
                 if (e.Key.Equals(Key.X))
                 {
-                    var t = textBlockBat.Text;
                     if (battleController.battleQueue.Count > 0)
                     {
-                        battleController.battleQueue.Dequeue().Invoke();
+                        t = battleController.battleQueue.Dequeue().Invoke();
+                        if (t != "")
+                        {
+                            textBlockBat.Text = t;
+                        } else if (t == "END_BATTLE_NOW")
+                        {
+                            battleEnd("The battle has ended");
+                        }
+                        dealWithDamage();
                     }
                 }
 
@@ -677,13 +683,13 @@ namespace SilverlightApplication3
                 }
                 else
                 {
-                    battleMoveSelected(new BattleAction(MyAttack, "Struggle", "Struggle"));
+                    battleMoveSelected(new BattleAction(battleController.MyAttack, "Struggle", "Struggle"));
                 }
 
             }
             else
             {
-                battleMoveSelected(new BattleAction(MyAttack, battleController.CurrentInBattle.PerformMove(0), battleController.CurrentInBattle.Name + " used " + battleController.CurrentInBattle.PerformMove(0).ToString()));
+                battleMoveSelected(new BattleAction(battleController.MyAttack, battleController.CurrentInBattle.PerformMove(0), battleController.CurrentInBattle.Name + " used " + battleController.CurrentInBattle.PerformMove(0).ToString()));
             }
         }
 
@@ -706,7 +712,7 @@ namespace SilverlightApplication3
             }
             else
             {
-                battleMoveSelected(new BattleAction(MyAttack, battleController.CurrentInBattle.PerformMove(1), battleController.CurrentInBattle.Name + " used " + battleController.CurrentInBattle.PerformMove(1).ToString()));
+                battleMoveSelected(new BattleAction(battleController.MyAttack, battleController.CurrentInBattle.PerformMove(1), battleController.CurrentInBattle.Name + " used " + battleController.CurrentInBattle.PerformMove(1).ToString()));
             }
         }
 
@@ -723,7 +729,7 @@ namespace SilverlightApplication3
             }
             else
             {
-                battleMoveSelected(new BattleAction(MyAttack, battleController.CurrentInBattle.PerformMove(2), battleController.CurrentInBattle.Name + " used " + battleController.CurrentInBattle.PerformMove(2).ToString()));
+                battleMoveSelected(new BattleAction(battleController.MyAttack, battleController.CurrentInBattle.PerformMove(2), battleController.CurrentInBattle.Name + " used " + battleController.CurrentInBattle.PerformMove(2).ToString()));
 
             }
         }
@@ -742,102 +748,12 @@ namespace SilverlightApplication3
             }
             else
             {
-                battleMoveSelected(new BattleAction(MyAttack, battleController.CurrentInBattle.PerformMove(3), battleController.CurrentInBattle.Name + " used " + battleController.CurrentInBattle.PerformMove(3).ToString()));
+                battleMoveSelected(new BattleAction(battleController.MyAttack, battleController.CurrentInBattle.PerformMove(3), battleController.CurrentInBattle.Name + " used " + battleController.CurrentInBattle.PerformMove(3).ToString()));
             }
         }
 
-        private MoveDictionary FoesNextAttack()
-        {
-            bool f = false;
-            Random r = new Random();
-            MoveDictionary foeMove = MoveStore.Instance.get("Struggle");
-            int i = 0;
-
-            if (battleController.CurrentFoe.hasPP())
-            {
-                while (f == false)
-                {
-                    i = r.Next(0, 4);
-                    if (battleController.CurrentFoe.PP[i] > 0 && battleController.CurrentFoe.Moves[i] != null)
-                    {
-                        f = true;
-                        foeMove = MoveStore.Instance.get(battleController.CurrentFoe.Moves[i]);
-
-                    }
-                }
-            }
-
-            battleController.FoeNextAttack = foeMove;
-            battleController.FoeNextAttackI = i;
-            return foeMove;
-        }
-
-        private string FoeAttack()
-        {
-            if (inBattle && !battleController.finalMoveFinished)
-            {
-                if (battleController.FoeNextAttack.ToFoe)
-                {
-                    return dealWithAttack(battleController.generalAttack(battleController.CurrentFoe, battleController.CurrentInBattle, battleController.FoeNextAttack, battleController.FoeNextAttackI, "The foe"));
-                }
-                else
-                {
-                    return dealWithAttack(battleController.generalAttack(battleController.CurrentFoe, battleController.CurrentFoe, battleController.FoeNextAttack, battleController.FoeNextAttackI, "The foe"));
-                }
-
-            }
-            return "";
-        }
-
-        public string dealWithAttack(Dictionary<string, string> result)
-        {
-            if (result.Keys.Contains("END_BATTLE_NOW"))
-            {
-                battleEnd("The battle has ended!");
-                return "The battle has ended!";
-            }
-
-            dealWithDamage();
-            try
-            {
-                MyStatusLabel.Content = result["MyStatusLabel"];
-            }
-            catch
-            {
-
-            }
-            try
-            {
-                FoeStatusLabel.Content = result["FoeStatusLabel"];
-            }
-            catch
-            {
-
-            }
-
-            return result["return"];
-        }
-
-        private string MyAttack(string m)
-        {
-            if (inBattle && !battleController.finalMoveFinished)
-            {
-                MoveDictionary mov = MoveStore.Instance.get(m);
-                if (mov.ToFoe)
-                {
-                    return dealWithAttack(battleController.generalAttack(battleController.CurrentInBattle, battleController.CurrentFoe, mov, Array.IndexOf(battleController.CurrentInBattle.Moves, m), ""));
-                }
-                else
-                {
-                    return dealWithAttack(battleController.generalAttack(battleController.CurrentInBattle, battleController.CurrentInBattle, mov, Array.IndexOf(battleController.CurrentInBattle.Moves, m), ""));
-                }
-
-            }
-
-            return "";
 
 
-        }
 
         public void deleteMove(int i)
         {
@@ -860,6 +776,7 @@ namespace SilverlightApplication3
             battleController.battleQueue.Enqueue(() =>
             {
                 textBlockBat.Text = text;
+                return "";
             });
 
             battleController.battleQueue.Enqueue(() =>
@@ -893,6 +810,7 @@ namespace SilverlightApplication3
                     }
                     catch { };
                 }
+                return "";
             });
 
 
@@ -1042,157 +960,21 @@ namespace SilverlightApplication3
         {
             bBack.Visibility = Visibility.Collapsed;
 
-            Action battleEndEffects = (() =>
-            {
-                if (inBattle)
-                {
-                    endOfAttackPhaseEffects();
-                }
-            });
 
-            MoveDictionary foeMove = FoesNextAttack();
-            int myMovePriorty = MoveStore.Instance.get(b.md).Priority;
+
+            b1.IsEnabled = false;
+            b2.IsEnabled = false;
+            b3.IsEnabled = false;
+            b4.IsEnabled = false;
 
             BattleCanvas.Visibility = Visibility.Visible;
-            battleController.finalMoveFinished = false;
-            if (!b.isAttacking())
-            {
-                battleController.battleQueue.Enqueue(() => { textBlockBat.Text = FoeAttack(); });
-                battleController.battleQueue.Enqueue(battleEndEffects);
 
-                b1.IsEnabled = false;
-                b2.IsEnabled = false;
-                b3.IsEnabled = false;
-                b4.IsEnabled = false;
-
-                battleController.finalMoveFinished = false;
-                textBlockBat.Text = b.Act();
-            }
-            else
-            {
-                if (foeMove.Priority == myMovePriorty)
-                {
-                    if (battleController.CurrentFoe.Speed > battleController.CurrentInBattle.Speed)
-                    {
-                        battleController.battleQueue.Enqueue(() => { textBlockBat.Text = b.Act(); });
-                        battleController.battleQueue.Enqueue(battleEndEffects);
-                        textBlockBat.Text = FoeAttack();
-
-                    }
-                    else
-                    {
-
-                        battleController.battleQueue.Enqueue(() => { textBlockBat.Text = FoeAttack(); });
-                        battleController.battleQueue.Enqueue(battleEndEffects);
-                        textBlockBat.Text = b.Act();
-
-                    }
-                }
-                else
-                {
-                    if (foeMove.Priority > myMovePriorty)
-                    {
-                        battleController.battleQueue.Enqueue(() => { textBlockBat.Text = b.Act(); });
-                        battleController.battleQueue.Enqueue(battleEndEffects);
-                        textBlockBat.Text = FoeAttack();
-                    }
-                    else
-                    {
-                        battleController.battleQueue.Enqueue(() => { textBlockBat.Text = FoeAttack(); });
-                        battleController.battleQueue.Enqueue(battleEndEffects);
-                        textBlockBat.Text = b.Act();
-                    }
-                }
-
-
-
-                b1.IsEnabled = false;
-                b2.IsEnabled = false;
-                b3.IsEnabled = false;
-                b4.IsEnabled = false;
-
-
-            }
+            textBlockBat.Text = battleController.BattleMoveSelected(b);
+            dealWithDamage();
 
 
         }
-
-        private void endOfAttackPhaseEffects()
-        {
-            battleController.CurrentFoe.Protection = null;
-            battleController.CurrentInBattle.Protection = null;
-            //weather like hail and sandstorm
-
-            string ret = battleController.EndOfAttackPhaseEffects();
-            if (ret != "")
-            {
-                battleController.battleQueue.Enqueue(() => { textBlockBat.Text = ret; dealWithDamage(); });
-            }
-            
-            if (battleController.CurrentFoe.Leeching)
-            {
-                if (battleController.CurrentFoe.NeedEndOfTurnEffects())
-                {
-                    battleController.battleQueue.Enqueue(() =>
-                    {
-                        textBlockBat.Text = battleController.CurrentFoe.EndOfTurnEffects((int)(Math.Ceiling(0.3 * battleController.CurrentInBattle.CurrentHP)));
-                        dealWithDamage();
-                    }
-                    );
-                }
-
-            }
-            else
-            {
-                if (battleController.CurrentFoe.NeedEndOfTurnEffects())
-                {
-                    battleController.battleQueue.Enqueue(() =>
-                    {
-                        textBlockBat.Text = battleController.CurrentFoe.EndOfTurnEffects(0);
-                        dealWithDamage();
-                    }
-                    );
-                }
-
-            }
-
-            if (battleController.CurrentInBattle.Leeching)
-            {
-                if (battleController.CurrentInBattle.NeedEndOfTurnEffects())
-                {
-                    battleController.battleQueue.Enqueue(() => {
-                        textBlockBat.Text = battleController.CurrentInBattle.EndOfTurnEffects((int)(Math.Ceiling(0.3 * battleController.CurrentFoe.CurrentHP)));
-                        dealWithDamage();
-                    }
-                    );
-                }
-
-            }
-            else
-            {
-                if (battleController.CurrentInBattle.NeedEndOfTurnEffects())
-                {
-                    battleController.battleQueue.Enqueue(() => {
-                        textBlockBat.Text = battleController.CurrentInBattle.EndOfTurnEffects(0);
-                        dealWithDamage();
-                    }
-                    );
-                }
-
-            }
-
-            if (battleController.battleQueue.Count > 0)
-            {
-                battleController.battleQueue.Dequeue().Invoke();
-            }
-            else
-            {
-                dealWithDamage();
-            }
-
-
-
-        }
+        
 
         public void showPokeInfo(Pokemon p)
         {
@@ -1424,7 +1206,7 @@ namespace SilverlightApplication3
             else
             {
                 battleController.battleQueue.Enqueue(() => textBlockBat.Text = p.Name + " is trying to learn the move " + m);
-                battleController.battleQueue.Enqueue(() => openYesNo("Would you like to delete a move in order to learn " + m + "?", true));
+                battleController.battleQueue.Enqueue(() => { openYesNo("Would you like to delete a move in order to learn " + m + "?", true); return ""; });
                 currentInteraction = new UxInteraction(() =>
                 {
                     deletingAMove = true;
@@ -1445,7 +1227,7 @@ namespace SilverlightApplication3
 
         private void checkAlive()
         {
-            if (battleController.CurrentFoe.CurrentHP == 0)
+            if (battleController.CurrentFoe.CurrentHP == 0 && battleController.FoeNumberOfAlivePokemon >= 1)
             {
                 battleController.battleQueue.Clear();
                 battleController.battleQueue.Enqueue(() => textBlockBat.Text = "The foe has fainted!");
@@ -1489,7 +1271,8 @@ namespace SilverlightApplication3
                         FoeNameLabel.Content = battleController.CurrentFoe.Name + " Lvl:" + battleController.CurrentFoe.level;
                         dealWithDamage();
                         PokesSeenID.Add(battleController.CurrentFoe.Number);
-                        battleController.battleQueue.Enqueue(() => { textBlockBat.Text = battleController.InvokeFoeEntryEffects(); dealWithDamage(); });
+                        battleController.battleQueue.Enqueue(() => { textBlockBat.Text = battleController.InvokeFoeEntryEffects(); dealWithDamage(); return "";});
+                        return "";
                     });
 
                 }
@@ -1501,8 +1284,8 @@ namespace SilverlightApplication3
                 battleController.finalMoveFinished = true;
                 if (moreAlive())
                 {
-                    battleController.battleQueue.Enqueue(() => textBlockBat.Text = battleController.CurrentInBattle.Name + " has fainted");
-                    battleController.battleQueue.Enqueue(() => switchScreen(true));
+                    battleController.battleQueue.Enqueue(() => { textBlockBat.Text = battleController.CurrentInBattle.Name + " has fainted"; return ""; });
+                    battleController.battleQueue.Enqueue(() => { switchScreen(true); return ""; });
                 }
                 else
                 {

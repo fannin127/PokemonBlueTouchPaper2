@@ -48,6 +48,11 @@ namespace SilverlightApplication3
             desc = text;
         }
 
+        public BattleAction(bool justFoeAttacking)
+        {
+            m = new Func<string, string> ( (lam) => { return lam; } );
+        }
+
         public bool isAttacking()
         {
             return m != null;

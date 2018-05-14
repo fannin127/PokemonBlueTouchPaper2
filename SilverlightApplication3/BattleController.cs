@@ -33,17 +33,20 @@ namespace SilverlightApplication3
         public HashSet<Func<Pokemon, string>> myEntryEffects = new HashSet<Func<Pokemon, string>>();
         public HashSet<Func<Pokemon, string>> foeEntryEffects = new HashSet<Func<Pokemon, string>>();
 
-        public Queue<Action> battleQueue = new Queue<Action>();
+        public Queue<Func<string>> battleQueue = new Queue<Func<string>>();
 
         private enum effectiveness { normal, notVery, immune, super }
         public MoveDictionary FoeNextAttack { get; set; }
         public int FoeNextAttackI { get; set; }
+        public int FoeNumberOfAlivePokemon { get { return foe.Count; } }
+
         private effectiveness effective;
         public Dictionary<string, bool> BattleConditions;
         private Dictionary<string, int> ConditionCounters;
 
         private Dictionary<string, int> FoeSideConditionCounters;
         private Dictionary<string, int> MySideConditionCounters;
+
 
 
         private int MyLastUsedVal = 0;
@@ -671,10 +674,6 @@ namespace SilverlightApplication3
                 FoeLastUsedMove = move.Name;
             }
 
-
-            DealWithDamage();
-
-
             retDic.Add("return", ret);
 
             return retDic;
@@ -1225,6 +1224,14 @@ namespace SilverlightApplication3
             return weak;
         }
 
+        internal void FoeSwitchOut(int i)
+        {
+            Random r = new Random();
+            var temp = foe[0];
+            foe[0] = foe[i];
+            foe[i] = temp;   
+        }
+
         public bool isImmune(MoveDictionary m, Pokemon def)
         {
             double eff = getWeakness(def.TypeOne, def.TypeTwo, m.Type);
@@ -1454,9 +1461,7 @@ namespace SilverlightApplication3
             {
                 return (int)(1.5 * 130 * levelFaint) / (7 * numberOfParticipants);
             }
-        }
-
-       
+        }    
 
         private bool moreAlive()
         {
@@ -1665,6 +1670,235 @@ namespace SilverlightApplication3
                ret += t(CurrentFoe);
             }
             return ret;
+        }
+
+        public bool foeHasMorePokemon()
+        {
+            if (foe.Count > 1)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public string BattleMoveSelected(BattleAction b)
+        {
+            BattleAction foeMove = FoesNextMove();
+            int myMovePriorty = MoveStore.Instance.get(b.md).Priority;
+
+            Func<string> battleEndEffects = (() => { endOfAttackPhaseEffects(); return ""; });
+
+            finalMoveFinished = false;
+            if (!b.isAttacking())
+            {
+                battleQueue.Enqueue(() => { return FoeAttack(); });
+                battleQueue.Enqueue(battleEndEffects);
+
+             
+                finalMoveFinished = false;
+                return b.Act();
+            }
+            else
+            {
+                if (FoeNextAttack.Priority == myMovePriorty)
+                {
+                    if (CurrentFoe.Speed > CurrentInBattle.Speed)
+                    {
+                        battleQueue.Enqueue(() => { return b.Act(); });
+                        battleQueue.Enqueue(battleEndEffects);
+                        return FoeAttack();
+
+                    }
+                    else
+                    {
+
+                        battleQueue.Enqueue(() => { return FoeAttack(); });
+                        battleQueue.Enqueue(battleEndEffects);
+                        return b.Act();
+
+                    }
+                }
+                else
+                {
+                    if (FoeNextAttack.Priority > myMovePriorty)
+                    {
+                        battleQueue.Enqueue(() => { return b.Act(); });
+                        battleQueue.Enqueue(battleEndEffects);
+                        return FoeAttack();
+                    }
+                    else
+                    {
+                        battleQueue.Enqueue(() => { return FoeAttack(); });
+                        battleQueue.Enqueue(battleEndEffects);
+                        return b.Act();
+                    }
+                }
+
+
+
+               
+
+
+            }
+        }
+
+        private void endOfAttackPhaseEffects()
+        {
+            CurrentFoe.Protection = null;
+            CurrentInBattle.Protection = null;
+            //weather like hail and sandstorm
+
+            string ret = EndOfAttackPhaseEffects();
+            if (ret != "")
+            {
+                battleQueue.Enqueue(() => { return ret; });
+            }
+
+            if (CurrentFoe.Leeching)
+            {
+                if (CurrentFoe.NeedEndOfTurnEffects())
+                {
+                    battleQueue.Enqueue(() =>
+                    {
+                        return CurrentFoe.EndOfTurnEffects((int)(Math.Ceiling(0.3 * CurrentInBattle.CurrentHP))) ;
+                    }
+                    );
+                }
+
+            }
+            else
+            {
+                if (CurrentFoe.NeedEndOfTurnEffects())
+                {
+                    battleQueue.Enqueue(() =>
+                    {
+                        return CurrentFoe.EndOfTurnEffects(0);
+                    }
+                    );
+                }
+
+            }
+
+            if (CurrentInBattle.Leeching)
+            {
+                if (CurrentInBattle.NeedEndOfTurnEffects())
+                {
+                    battleQueue.Enqueue(() => {
+                       return CurrentInBattle.EndOfTurnEffects((int)(Math.Ceiling(0.3 * CurrentFoe.CurrentHP)));
+                    }
+                    );
+                }
+
+            }
+            else
+            {
+                if (CurrentInBattle.NeedEndOfTurnEffects())
+                {
+                    battleQueue.Enqueue(() => {
+                        return CurrentInBattle.EndOfTurnEffects(0);
+                    }
+                    );
+                }
+
+            }
+
+            if (battleQueue.Count > 0)
+            {
+                battleQueue.Dequeue().Invoke();
+            }
+            else
+            {
+            }
+
+
+
+        }
+
+        private string FoeAttack()
+        {
+            if (!finalMoveFinished)
+            {
+                if (FoeNextAttack.ToFoe)
+                {
+                    return dealWithAttack(generalAttack(CurrentFoe, CurrentInBattle, FoeNextAttack, FoeNextAttackI, "The foe"));
+                }
+                else
+                {
+                    return dealWithAttack(generalAttack(CurrentFoe, CurrentFoe, FoeNextAttack, FoeNextAttackI, "The foe"));
+                }
+
+            }
+            return "";
+        }
+
+        public string dealWithAttack(Dictionary<string, string> result)
+        {
+            if (result.Keys.Contains("END_BATTLE_NOW"))
+            {
+                return "END_BATTLE_NOW";
+            }
+
+            return result["return"];
+        }
+
+
+        public string MyAttack(string m)
+        {
+            if (!finalMoveFinished)
+            {
+                MoveDictionary mov = MoveStore.Instance.get(m);
+                if (mov.ToFoe)
+                {
+                    return dealWithAttack(generalAttack(CurrentInBattle, CurrentFoe, mov, Array.IndexOf(CurrentInBattle.Moves, m), ""));
+                }
+                else
+                {
+                    return dealWithAttack(generalAttack(CurrentInBattle, CurrentInBattle, mov, Array.IndexOf(CurrentInBattle.Moves, m), ""));
+                }
+
+            }
+
+            return "";
+
+
+        }
+
+        private BattleAction FoesNextMove()
+        {
+            bool f = false;
+            Random r = new Random();
+            MoveDictionary foeMove = MoveStore.Instance.get(null);
+            int i = 0;
+
+            if (foeHasMorePokemon() && getWeakness(CurrentFoe.TypeOne, CurrentFoe.TypeTwo, CurrentInBattle.TypeOne) < 1)
+            {
+                //chance of deciding to switch
+                if (FoeNumberOfAlivePokemon > 1)
+                {
+                    if (r.Next(0, 10) >= 0)
+                    {
+                        return new BattleAction(FoeSwitchOut, r.Next(FoeNumberOfAlivePokemon - 1, 1), "The foe switched out!");
+                    }
+                }
+            }
+
+            if (CurrentFoe.hasPP())
+            {
+                while (f == false)
+                {
+                    i = r.Next(0, 4);
+                    if (CurrentFoe.PP[i] > 0 && CurrentFoe.Moves[i] != null)
+                    {
+                        f = true;
+                        foeMove = MoveStore.Instance.get(CurrentFoe.Moves[i]);
+
+                    }
+                }
+            }
+
+            FoeNextAttack = foeMove;
+            FoeNextAttackI = i;
+            return new BattleAction(true);
         }
     }
 }

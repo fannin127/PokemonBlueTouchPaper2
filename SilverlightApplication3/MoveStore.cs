@@ -91,12 +91,24 @@ namespace SilverlightApplication3
             {
                 return struggleMove;
             }
-            var q = moves.Where(c => c.Name == m);
-            if (!q.Any())
+            var q = moves.FirstOrDefault(c =>  c.Name == m);
+
+            if (q == null)
             {
-                moves.Add(readInMoveFromXML(m));
+                q = readInMoveFromXML(m);
+
+                //I think this bug is probably down to moves that aren't implemented (disable)
+                //null is added to the list which then breaks the where lambda
+                //check for null when adding as a temp fix
+                //(might then break elsewhere if you try to use said non-implemented move, hence struggle)
+                if (q == null)
+                {
+                    return struggleMove;
+                }
+                moves.Add(q);
             }
-            return q.ToArray()[0];
+
+            return q;
         }
 
         private Func<Pokemon, string> getUniqueActionOnePokemon(string name)
